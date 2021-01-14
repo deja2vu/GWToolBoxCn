@@ -1,0 +1,498 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Modules">
+      <UniqueIdentifier>{42e7c37b-a99d-44dd-8d77-b917d21e7e62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{90d99f40-d0b3-45fb-86e5-5ed37a47ceea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Widgets">
+      <UniqueIdentifier>{f1f908a1-787f-41ad-90bf-7d9f29311c7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows">
+      <UniqueIdentifier>{89f256d3-bf92-4452-8039-91eb1e6b50e8}</UniqueIdentifier>
+      <Extensions>
+      </Extensions>
+    </Filter>
+    <Filter Include="Widgets\Minimap">
+      <UniqueIdentifier>{d5bb0394-a957-45a3-873e-1a82df06bb12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="imgui">
+      <UniqueIdentifier>{d7ad8f1d-dfad-4d13-a0b9-ff40ecb126dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fonts">
+      <UniqueIdentifier>{0e7421f5-e8c4-429a-9d71-b4e7149862ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="imgui\examples">
+      <UniqueIdentifier>{aa9ec044-3ef0-4e3c-b2c0-2ce42e0a819b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utf8proc">
+      <UniqueIdentifier>{4b7e1521-dd69-4323-8ac0-942bc69f5194}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Simpleini">
+      <UniqueIdentifier>{e92d89c4-9ca6-496b-8fec-71c8ec54bbd0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="GWToolboxdll\Windows\BuildsWindow.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Windows\DailyQuestsWindow.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Windows\DialogsWindow.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Windows\DoorMonitorWindow.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Windows\FactionLeaderboardWindow.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Windows\FriendListWindow.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Windows\HeroBuildsWindow.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Windows\Hotkeys.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Windows\HotkeysWindow.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Windows\InfoWindow.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Windows\MainWindow.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Windows\MaterialsWindow.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Windows\NotePadWindow.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Windows\ObjectiveTimerWindow.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Windows\PacketLoggerWindow.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Windows\Pcons.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Windows\PconsWindow.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Windows\SettingsWindow.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Windows\SkillListingWindow.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Windows\StringDecoderWindow.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Windows\TravelWindow.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Widgets\AlcoholWidget.cpp">
+      <Filter>Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Widgets\BondsWidget.cpp">
+      <Filter>Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Widgets\ClockWidget.cpp">
+      <Filter>Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Widgets\DistanceWidget.cpp">
+      <Filter>Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Widgets\HealthWidget.cpp">
+      <Filter>Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Widgets\PartyDamage.cpp">
+      <Filter>Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Widgets\ServerInfoWidget.cpp">
+      <Filter>Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Widgets\SkillbarWidget.cpp">
+      <Filter>Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Widgets\TimerWidget.cpp">
+      <Filter>Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Widgets\VanquishWidget.cpp">
+      <Filter>Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Widgets\Minimap\AgentRenderer.cpp">
+      <Filter>Widgets\Minimap</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Widgets\Minimap\CustomRenderer.cpp">
+      <Filter>Widgets\Minimap</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Widgets\Minimap\EffectRenderer.cpp">
+      <Filter>Widgets\Minimap</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Widgets\Minimap\Minimap.cpp">
+      <Filter>Widgets\Minimap</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Widgets\Minimap\PingsLinesRenderer.cpp">
+      <Filter>Widgets\Minimap</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Widgets\Minimap\PmapRenderer.cpp">
+      <Filter>Widgets\Minimap</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Widgets\Minimap\RangeRenderer.cpp">
+      <Filter>Widgets\Minimap</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Widgets\Minimap\SymbolsRenderer.cpp">
+      <Filter>Widgets\Minimap</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Modules\AprilFools.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Modules\ChatCommands.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Modules\ChatFilter.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Modules\GameSettings.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Modules\InventoryManager.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Modules\PartyWindowModule.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Modules\Resources.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Modules\ToolboxSettings.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Modules\ToolboxTheme.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Modules\ZrawDeepModule.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\Utils\RateLimiter.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\base64.cpp" />
+    <ClCompile Include="GWToolboxdll\CursorFix.cpp" />
+    <ClCompile Include="GWToolboxdll\d3dx9_dynamic.cpp" />
+    <ClCompile Include="GWToolboxdll\GuiUtils.cpp" />
+    <ClCompile Include="GWToolboxdll\GWToolbox.cpp" />
+    <ClCompile Include="GWToolboxdll\ImGuiAddons.cpp" />
+    <ClCompile Include="GWToolboxdll\IRC.cc" />
+    <ClCompile Include="GWToolboxdll\Logger.cpp" />
+    <ClCompile Include="GWToolboxdll\main.cpp" />
+    <ClCompile Include="GWToolboxdll\mp3.cpp" />
+    <ClCompile Include="GWToolboxdll\sha1.cpp" />
+    <ClCompile Include="GWToolboxdll\stdafx.cpp" />
+    <ClCompile Include="GWToolboxdll\ToolboxModule.cpp" />
+    <ClCompile Include="GWToolboxdll\ToolboxUIElement.cpp" />
+    <ClCompile Include="GWToolboxdll\ToolboxWidget.cpp" />
+    <ClCompile Include="GWToolboxdll\ToolboxWindow.cpp" />
+    <ClCompile Include="GWToolboxdll\Utf8.cpp" />
+    <ClCompile Include="Dependencies\imgui\imgui.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\imgui\imgui_demo.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\imgui\imgui_draw.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\imgui\imgui_widgets.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\fonts\fontawesome5.cpp">
+      <Filter>Fonts</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\fonts\source_sans_pro_regular.cpp">
+      <Filter>Fonts</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\imgui\examples\imgui_impl_win32.cpp">
+      <Filter>imgui\examples</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\utf8proc\utf8proc.c">
+      <Filter>Utf8proc</Filter>
+    </ClCompile>
+    <ClCompile Include="GWToolboxdll\imgui_impl_dx9.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GWToolboxdll\Windows\BuildsWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Windows\DailyQuestsWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Windows\DialogsWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Windows\DoorMonitorWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Windows\FactionLeaderboardWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Windows\FriendListWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Windows\HeroBuildsWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Windows\Hotkeys.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Windows\HotkeysWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Windows\InfoWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Windows\MainWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Windows\MaterialsWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Windows\NotePadWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Windows\ObjectiveTimerWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Windows\PacketLoggerWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Windows\Pcons.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Windows\PconsWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Windows\SettingsWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Windows\SkillListingWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Windows\StringDecoderWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Windows\TravelWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Widgets\AlcoholWidget.h">
+      <Filter>Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Widgets\BondsWidget.h">
+      <Filter>Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Widgets\ClockWidget.h">
+      <Filter>Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Widgets\DistanceWidget.h">
+      <Filter>Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Widgets\HealthWidget.h">
+      <Filter>Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Widgets\PartyDamage.h">
+      <Filter>Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Widgets\ServerInfoWidget.h">
+      <Filter>Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Widgets\SkillbarWidget.h">
+      <Filter>Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Widgets\TimerWidget.h">
+      <Filter>Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Widgets\VanquishWidget.h">
+      <Filter>Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Widgets\Minimap\AgentRenderer.h">
+      <Filter>Widgets\Minimap</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Widgets\Minimap\CustomRenderer.h">
+      <Filter>Widgets\Minimap</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Widgets\Minimap\D3DVertex.h">
+      <Filter>Widgets\Minimap</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Widgets\Minimap\EffectRenderer.h">
+      <Filter>Widgets\Minimap</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Widgets\Minimap\Minimap.h">
+      <Filter>Widgets\Minimap</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Widgets\Minimap\PingsLinesRenderer.h">
+      <Filter>Widgets\Minimap</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Widgets\Minimap\PmapRenderer.h">
+      <Filter>Widgets\Minimap</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Widgets\Minimap\RangeRenderer.h">
+      <Filter>Widgets\Minimap</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Widgets\Minimap\SymbolsRenderer.h">
+      <Filter>Widgets\Minimap</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Widgets\Minimap\VBuffer.h">
+      <Filter>Widgets\Minimap</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Modules\AprilFools.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Modules\ChatCommands.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Modules\ChatFilter.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Modules\GameSettings.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Modules\InventoryManager.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Modules\PartyWindowModule.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Modules\Resources.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Modules\ToolboxSettings.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Modules\ToolboxTheme.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Modules\ZrawDeepModule.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\Utils\RateLimiter.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\base64.h" />
+    <ClInclude Include="GWToolboxdll\CircurlarBuffer.h" />
+    <ClInclude Include="GWToolboxdll\Color.h" />
+    <ClInclude Include="GWToolboxdll\CursorFix.h" />
+    <ClInclude Include="GWToolboxdll\d3dx9_dynamic.h" />
+    <ClInclude Include="GWToolboxdll\Defines.h" />
+    <ClInclude Include="GWToolboxdll\GuiUtils.h" />
+    <ClInclude Include="GWToolboxdll\GWToolbox.h" />
+    <ClInclude Include="GWToolboxdll\imconfig.h" />
+    <ClInclude Include="GWToolboxdll\ImGuiAddons.h" />
+    <ClInclude Include="GWToolboxdll\IRC.h" />
+    <ClInclude Include="GWToolboxdll\Keys.h" />
+    <ClInclude Include="GWToolboxdll\Logger.h" />
+    <ClInclude Include="GWToolboxdll\mp3.h" />
+    <ClInclude Include="GWToolboxdll\sha1.hpp" />
+    <ClInclude Include="GWToolboxdll\stdafx.h" />
+    <ClInclude Include="GWToolboxdll\Timer.h" />
+    <ClInclude Include="GWToolboxdll\ToolboxModule.h" />
+    <ClInclude Include="GWToolboxdll\ToolboxUIElement.h" />
+    <ClInclude Include="GWToolboxdll\ToolboxWidget.h" />
+    <ClInclude Include="GWToolboxdll\ToolboxWindow.h" />
+    <ClInclude Include="GWToolboxdll\Utf8.h" />
+    <ClInclude Include="Dependencies\imgui\imgui.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\imgui\imgui_internal.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\imgui\imstb_rectpack.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\imgui\imstb_textedit.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\imgui\imstb_truetype.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\fonts\fontawesome5.h">
+      <Filter>Fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\fonts\source_sans_pro_regular.h">
+      <Filter>Fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\imgui\examples\imgui_impl_win32.h">
+      <Filter>imgui\examples</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\utf8proc\utf8proc.h">
+      <Filter>Utf8proc</Filter>
+    </ClInclude>
+    <ClInclude Include="GWToolboxdll\imgui_impl_dx9.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Dependencies\SimpleIni\SimpleIni.h">
+      <Filter>Simpleini</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\materials\Powerstone_of_Courage.png" />
+    <Image Include="resources\materials\Scroll_of_Resurrection.png" />
+    <Image Include="resources\icons\airplane.png" />
+    <Image Include="resources\icons\cupcake.png" />
+    <Image Include="resources\icons\dialogue.png" />
+    <Image Include="resources\icons\feather.png" />
+    <Image Include="resources\icons\info.png" />
+    <Image Include="resources\icons\keyboard.png" />
+    <Image Include="resources\icons\list.png" />
+    <Image Include="resources\icons\settings.png" />
+    <Image Include="resources\pcons\Armor_of_Salvation.png" />
+    <Image Include="resources\pcons\Birthday_Cupcake.png" />
+    <Image Include="resources\pcons\Blue_Rock_Candy.png" />
+    <Image Include="resources\pcons\Bottle_of_Grog.png" />
+    <Image Include="resources\pcons\Bowl_of_Skalefin_Soup.png" />
+    <Image Include="resources\pcons\Candy_Apple.png" />
+    <Image Include="resources\pcons\Candy_Corn.png" />
+    <Image Include="resources\pcons\Drake_Kabob.png" />
+    <Image Include="resources\pcons\Dwarven_Ale.png" />
+    <Image Include="resources\pcons\Essence_of_Celerity.png" />
+    <Image Include="resources\pcons\Fruitcake.png" />
+    <Image Include="resources\pcons\Golden_Egg.png" />
+    <Image Include="resources\pcons\Grail_of_Might.png" />
+    <Image Include="resources\pcons\Green_Rock_Candy.png" />
+    <Image Include="resources\pcons\Lunar_Fortune.png" />
+    <Image Include="resources\pcons\Pahnai_Salad.png" />
+    <Image Include="resources\pcons\Red_Rock_Candy.png" />
+    <Image Include="resources\pcons\Slice_of_Pumpkin_Pie.png" />
+    <Image Include="resources\pcons\Sugary_Blue_Drink.png" />
+    <Image Include="resources\pcons\War_Supplies.png" />
+    <Image Include="resources\bonds\Balthazar%27s_Spirit.png" />
+    <Image Include="resources\bonds\Essence_Bond.png" />
+    <Image Include="resources\bonds\Holy_Veil.png" />
+    <Image Include="resources\bonds\Life_Attunement.png" />
+    <Image Include="resources\bonds\Life_Barrier.png" />
+    <Image Include="resources\bonds\Life_Bond.png" />
+    <Image Include="resources\bonds\Live_Vicariously.png" />
+    <Image Include="resources\bonds\Mending.png" />
+    <Image Include="resources\bonds\Protective_Bond.png" />
+    <Image Include="resources\bonds\Purifying_Veil.png" />
+    <Image Include="resources\bonds\Retribution.png" />
+    <Image Include="resources\bonds\Strength_of_Honor.png" />
+    <Image Include="resources\bonds\Succor.png" />
+    <Image Include="resources\bonds\Vital_Blessing.png" />
+    <Image Include="resources\bonds\Watchful_Spirit.png" />
+    <Image Include="resources\bonds\Heroic_Refrain.png" />
+    <Image Include="resources\bonds\Burning_Refrain.png" />
+    <Image Include="resources\bonds\Mending_Refrain.png" />
+    <Image Include="resources\bonds\Bladeturn_Refrain.png" />
+    <Image Include="resources\bonds\Hasty_Refrain.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GWToolBoxCn.rc" />
+  </ItemGroup>
+</Project>

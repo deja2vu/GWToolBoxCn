@@ -1,0 +1,398 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Dependencies\fonts\fontawesome5.cpp" />
+    <ClCompile Include="Dependencies\fonts\source_sans_pro_regular.cpp" />
+    <ClCompile Include="Dependencies\imgui\examples\imgui_impl_win32.cpp" />
+    <ClCompile Include="Dependencies\imgui\imgui.cpp" />
+    <ClCompile Include="Dependencies\imgui\imgui_demo.cpp" />
+    <ClCompile Include="Dependencies\imgui\imgui_draw.cpp" />
+    <ClCompile Include="Dependencies\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="Dependencies\utf8proc\utf8proc.c" />
+    <ClCompile Include="GWToolboxdll\base64.cpp" />
+    <ClCompile Include="GWToolboxdll\CursorFix.cpp" />
+    <ClCompile Include="GWToolboxdll\d3dx9_dynamic.cpp" />
+    <ClCompile Include="GWToolboxdll\GuiUtils.cpp" />
+    <ClCompile Include="GWToolboxdll\GWToolbox.cpp" />
+    <ClCompile Include="GWToolboxdll\ImGuiAddons.cpp" />
+    <ClCompile Include="GWToolboxdll\imgui_impl_dx9.cpp" />
+    <ClCompile Include="GWToolboxdll\IRC.cc" />
+    <ClCompile Include="GWToolboxdll\Logger.cpp" />
+    <ClCompile Include="GWToolboxdll\main.cpp" />
+    <ClCompile Include="GWToolboxdll\Modules\AprilFools.cpp" />
+    <ClCompile Include="GWToolboxdll\Modules\ChatCommands.cpp" />
+    <ClCompile Include="GWToolboxdll\Modules\ChatFilter.cpp" />
+    <ClCompile Include="GWToolboxdll\Modules\GameSettings.cpp" />
+    <ClCompile Include="GWToolboxdll\Modules\InventoryManager.cpp" />
+    <ClCompile Include="GWToolboxdll\Modules\PartyWindowModule.cpp" />
+    <ClCompile Include="GWToolboxdll\Modules\Resources.cpp" />
+    <ClCompile Include="GWToolboxdll\Modules\ToolboxSettings.cpp" />
+    <ClCompile Include="GWToolboxdll\Modules\ToolboxTheme.cpp" />
+    <ClCompile Include="GWToolboxdll\Modules\ZrawDeepModule.cpp" />
+    <ClCompile Include="GWToolboxdll\mp3.cpp" />
+    <ClCompile Include="GWToolboxdll\sha1.cpp" />
+    <ClCompile Include="GWToolboxdll\stdafx.cpp" />
+    <ClCompile Include="GWToolboxdll\ToolboxModule.cpp" />
+    <ClCompile Include="GWToolboxdll\ToolboxUIElement.cpp" />
+    <ClCompile Include="GWToolboxdll\ToolboxWidget.cpp" />
+    <ClCompile Include="GWToolboxdll\ToolboxWindow.cpp" />
+    <ClCompile Include="GWToolboxdll\Utf8.cpp" />
+    <ClCompile Include="GWToolboxdll\Utils\RateLimiter.cpp" />
+    <ClCompile Include="GWToolboxdll\Widgets\AlcoholWidget.cpp" />
+    <ClCompile Include="GWToolboxdll\Widgets\BondsWidget.cpp" />
+    <ClCompile Include="GWToolboxdll\Widgets\ClockWidget.cpp" />
+    <ClCompile Include="GWToolboxdll\Widgets\DistanceWidget.cpp" />
+    <ClCompile Include="GWToolboxdll\Widgets\HealthWidget.cpp" />
+    <ClCompile Include="GWToolboxdll\Widgets\Minimap\AgentRenderer.cpp" />
+    <ClCompile Include="GWToolboxdll\Widgets\Minimap\CustomRenderer.cpp" />
+    <ClCompile Include="GWToolboxdll\Widgets\Minimap\EffectRenderer.cpp" />
+    <ClCompile Include="GWToolboxdll\Widgets\Minimap\Minimap.cpp" />
+    <ClCompile Include="GWToolboxdll\Widgets\Minimap\PingsLinesRenderer.cpp" />
+    <ClCompile Include="GWToolboxdll\Widgets\Minimap\PmapRenderer.cpp" />
+    <ClCompile Include="GWToolboxdll\Widgets\Minimap\RangeRenderer.cpp" />
+    <ClCompile Include="GWToolboxdll\Widgets\Minimap\SymbolsRenderer.cpp" />
+    <ClCompile Include="GWToolboxdll\Widgets\PartyDamage.cpp" />
+    <ClCompile Include="GWToolboxdll\Widgets\ServerInfoWidget.cpp" />
+    <ClCompile Include="GWToolboxdll\Widgets\SkillbarWidget.cpp" />
+    <ClCompile Include="GWToolboxdll\Widgets\TimerWidget.cpp" />
+    <ClCompile Include="GWToolboxdll\Widgets\VanquishWidget.cpp" />
+    <ClCompile Include="GWToolboxdll\Windows\BuildsWindow.cpp" />
+    <ClCompile Include="GWToolboxdll\Windows\DailyQuestsWindow.cpp" />
+    <ClCompile Include="GWToolboxdll\Windows\DialogsWindow.cpp" />
+    <ClCompile Include="GWToolboxdll\Windows\DoorMonitorWindow.cpp" />
+    <ClCompile Include="GWToolboxdll\Windows\FactionLeaderboardWindow.cpp" />
+    <ClCompile Include="GWToolboxdll\Windows\FriendListWindow.cpp" />
+    <ClCompile Include="GWToolboxdll\Windows\HeroBuildsWindow.cpp" />
+    <ClCompile Include="GWToolboxdll\Windows\Hotkeys.cpp" />
+    <ClCompile Include="GWToolboxdll\Windows\HotkeysWindow.cpp" />
+    <ClCompile Include="GWToolboxdll\Windows\InfoWindow.cpp" />
+    <ClCompile Include="GWToolboxdll\Windows\MainWindow.cpp" />
+    <ClCompile Include="GWToolboxdll\Windows\MaterialsWindow.cpp" />
+    <ClCompile Include="GWToolboxdll\Windows\NotePadWindow.cpp" />
+    <ClCompile Include="GWToolboxdll\Windows\ObjectiveTimerWindow.cpp" />
+    <ClCompile Include="GWToolboxdll\Windows\PacketLoggerWindow.cpp" />
+    <ClCompile Include="GWToolboxdll\Windows\Pcons.cpp" />
+    <ClCompile Include="GWToolboxdll\Windows\PconsWindow.cpp" />
+    <ClCompile Include="GWToolboxdll\Windows\SettingsWindow.cpp" />
+    <ClCompile Include="GWToolboxdll\Windows\SkillListingWindow.cpp" />
+    <ClCompile Include="GWToolboxdll\Windows\StringDecoderWindow.cpp" />
+    <ClCompile Include="GWToolboxdll\Windows\TravelWindow.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Dependencies\fonts\fontawesome5.h" />
+    <ClInclude Include="Dependencies\fonts\source_sans_pro_regular.h" />
+    <ClInclude Include="Dependencies\imgui\examples\imgui_impl_win32.h" />
+    <ClInclude Include="Dependencies\imgui\imgui.h" />
+    <ClInclude Include="Dependencies\imgui\imgui_internal.h" />
+    <ClInclude Include="Dependencies\imgui\imstb_rectpack.h" />
+    <ClInclude Include="Dependencies\imgui\imstb_textedit.h" />
+    <ClInclude Include="Dependencies\imgui\imstb_truetype.h" />
+    <ClInclude Include="Dependencies\SimpleIni\SimpleIni.h" />
+    <ClInclude Include="Dependencies\utf8proc\utf8proc.h" />
+    <ClInclude Include="GWToolboxdll\base64.h" />
+    <ClInclude Include="GWToolboxdll\CircurlarBuffer.h" />
+    <ClInclude Include="GWToolboxdll\Color.h" />
+    <ClInclude Include="GWToolboxdll\CursorFix.h" />
+    <ClInclude Include="GWToolboxdll\d3dx9_dynamic.h" />
+    <ClInclude Include="GWToolboxdll\Defines.h" />
+    <ClInclude Include="GWToolboxdll\GuiUtils.h" />
+    <ClInclude Include="GWToolboxdll\GWToolbox.h" />
+    <ClInclude Include="GWToolboxdll\imconfig.h" />
+    <ClInclude Include="GWToolboxdll\ImGuiAddons.h" />
+    <ClInclude Include="GWToolboxdll\imgui_impl_dx9.h" />
+    <ClInclude Include="GWToolboxdll\IRC.h" />
+    <ClInclude Include="GWToolboxdll\Keys.h" />
+    <ClInclude Include="GWToolboxdll\Logger.h" />
+    <ClInclude Include="GWToolboxdll\Modules\AprilFools.h" />
+    <ClInclude Include="GWToolboxdll\Modules\ChatCommands.h" />
+    <ClInclude Include="GWToolboxdll\Modules\ChatFilter.h" />
+    <ClInclude Include="GWToolboxdll\Modules\GameSettings.h" />
+    <ClInclude Include="GWToolboxdll\Modules\InventoryManager.h" />
+    <ClInclude Include="GWToolboxdll\Modules\PartyWindowModule.h" />
+    <ClInclude Include="GWToolboxdll\Modules\Resources.h" />
+    <ClInclude Include="GWToolboxdll\Modules\ToolboxSettings.h" />
+    <ClInclude Include="GWToolboxdll\Modules\ToolboxTheme.h" />
+    <ClInclude Include="GWToolboxdll\Modules\ZrawDeepModule.h" />
+    <ClInclude Include="GWToolboxdll\mp3.h" />
+    <ClInclude Include="GWToolboxdll\sha1.hpp" />
+    <ClInclude Include="GWToolboxdll\stdafx.h" />
+    <ClInclude Include="GWToolboxdll\Timer.h" />
+    <ClInclude Include="GWToolboxdll\ToolboxModule.h" />
+    <ClInclude Include="GWToolboxdll\ToolboxUIElement.h" />
+    <ClInclude Include="GWToolboxdll\ToolboxWidget.h" />
+    <ClInclude Include="GWToolboxdll\ToolboxWindow.h" />
+    <ClInclude Include="GWToolboxdll\Utf8.h" />
+    <ClInclude Include="GWToolboxdll\Utils\RateLimiter.h" />
+    <ClInclude Include="GWToolboxdll\Widgets\AlcoholWidget.h" />
+    <ClInclude Include="GWToolboxdll\Widgets\BondsWidget.h" />
+    <ClInclude Include="GWToolboxdll\Widgets\ClockWidget.h" />
+    <ClInclude Include="GWToolboxdll\Widgets\DistanceWidget.h" />
+    <ClInclude Include="GWToolboxdll\Widgets\HealthWidget.h" />
+    <ClInclude Include="GWToolboxdll\Widgets\Minimap\AgentRenderer.h" />
+    <ClInclude Include="GWToolboxdll\Widgets\Minimap\CustomRenderer.h" />
+    <ClInclude Include="GWToolboxdll\Widgets\Minimap\D3DVertex.h" />
+    <ClInclude Include="GWToolboxdll\Widgets\Minimap\EffectRenderer.h" />
+    <ClInclude Include="GWToolboxdll\Widgets\Minimap\Minimap.h" />
+    <ClInclude Include="GWToolboxdll\Widgets\Minimap\PingsLinesRenderer.h" />
+    <ClInclude Include="GWToolboxdll\Widgets\Minimap\PmapRenderer.h" />
+    <ClInclude Include="GWToolboxdll\Widgets\Minimap\RangeRenderer.h" />
+    <ClInclude Include="GWToolboxdll\Widgets\Minimap\SymbolsRenderer.h" />
+    <ClInclude Include="GWToolboxdll\Widgets\Minimap\VBuffer.h" />
+    <ClInclude Include="GWToolboxdll\Widgets\PartyDamage.h" />
+    <ClInclude Include="GWToolboxdll\Widgets\ServerInfoWidget.h" />
+    <ClInclude Include="GWToolboxdll\Widgets\SkillbarWidget.h" />
+    <ClInclude Include="GWToolboxdll\Widgets\TimerWidget.h" />
+    <ClInclude Include="GWToolboxdll\Widgets\VanquishWidget.h" />
+    <ClInclude Include="GWToolboxdll\Windows\BuildsWindow.h" />
+    <ClInclude Include="GWToolboxdll\Windows\DailyQuestsWindow.h" />
+    <ClInclude Include="GWToolboxdll\Windows\DialogsWindow.h" />
+    <ClInclude Include="GWToolboxdll\Windows\DoorMonitorWindow.h" />
+    <ClInclude Include="GWToolboxdll\Windows\FactionLeaderboardWindow.h" />
+    <ClInclude Include="GWToolboxdll\Windows\FriendListWindow.h" />
+    <ClInclude Include="GWToolboxdll\Windows\HeroBuildsWindow.h" />
+    <ClInclude Include="GWToolboxdll\Windows\Hotkeys.h" />
+    <ClInclude Include="GWToolboxdll\Windows\HotkeysWindow.h" />
+    <ClInclude Include="GWToolboxdll\Windows\InfoWindow.h" />
+    <ClInclude Include="GWToolboxdll\Windows\MainWindow.h" />
+    <ClInclude Include="GWToolboxdll\Windows\MaterialsWindow.h" />
+    <ClInclude Include="GWToolboxdll\Windows\NotePadWindow.h" />
+    <ClInclude Include="GWToolboxdll\Windows\ObjectiveTimerWindow.h" />
+    <ClInclude Include="GWToolboxdll\Windows\PacketLoggerWindow.h" />
+    <ClInclude Include="GWToolboxdll\Windows\Pcons.h" />
+    <ClInclude Include="GWToolboxdll\Windows\PconsWindow.h" />
+    <ClInclude Include="GWToolboxdll\Windows\SettingsWindow.h" />
+    <ClInclude Include="GWToolboxdll\Windows\SkillListingWindow.h" />
+    <ClInclude Include="GWToolboxdll\Windows\StringDecoderWindow.h" />
+    <ClInclude Include="GWToolboxdll\Windows\TravelWindow.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Dependencies\GWCA\vc\GWCA.vcxproj">
+      <Project>{b3359f05-68cf-4e7f-b9d6-d106f6d48a38}</Project>
+    </ProjectReference>
+    <ProjectReference Include="Dependencies\GWCA\vc\MinHook.vcxproj">
+      <Project>{ac820bba-bb5b-4d8c-96ff-ea8138ceed52}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\bonds\Balthazar%27s_Spirit.png" />
+    <Image Include="resources\bonds\Bladeturn_Refrain.png" />
+    <Image Include="resources\bonds\Burning_Refrain.png" />
+    <Image Include="resources\bonds\Essence_Bond.png" />
+    <Image Include="resources\bonds\Hasty_Refrain.png" />
+    <Image Include="resources\bonds\Heroic_Refrain.png" />
+    <Image Include="resources\bonds\Holy_Veil.png" />
+    <Image Include="resources\bonds\Life_Attunement.png" />
+    <Image Include="resources\bonds\Life_Barrier.png" />
+    <Image Include="resources\bonds\Life_Bond.png" />
+    <Image Include="resources\bonds\Live_Vicariously.png" />
+    <Image Include="resources\bonds\Mending.png" />
+    <Image Include="resources\bonds\Mending_Refrain.png" />
+    <Image Include="resources\bonds\Protective_Bond.png" />
+    <Image Include="resources\bonds\Purifying_Veil.png" />
+    <Image Include="resources\bonds\Retribution.png" />
+    <Image Include="resources\bonds\Strength_of_Honor.png" />
+    <Image Include="resources\bonds\Succor.png" />
+    <Image Include="resources\bonds\Vital_Blessing.png" />
+    <Image Include="resources\bonds\Watchful_Spirit.png" />
+    <Image Include="resources\icons\airplane.png" />
+    <Image Include="resources\icons\cupcake.png" />
+    <Image Include="resources\icons\dialogue.png" />
+    <Image Include="resources\icons\feather.png" />
+    <Image Include="resources\icons\info.png" />
+    <Image Include="resources\icons\keyboard.png" />
+    <Image Include="resources\icons\list.png" />
+    <Image Include="resources\icons\settings.png" />
+    <Image Include="resources\materials\Powerstone_of_Courage.png" />
+    <Image Include="resources\materials\Scroll_of_Resurrection.png" />
+    <Image Include="resources\pcons\Armor_of_Salvation.png" />
+    <Image Include="resources\pcons\Birthday_Cupcake.png" />
+    <Image Include="resources\pcons\Blue_Rock_Candy.png" />
+    <Image Include="resources\pcons\Bottle_of_Grog.png" />
+    <Image Include="resources\pcons\Bowl_of_Skalefin_Soup.png" />
+    <Image Include="resources\pcons\Candy_Apple.png" />
+    <Image Include="resources\pcons\Candy_Corn.png" />
+    <Image Include="resources\pcons\Drake_Kabob.png" />
+    <Image Include="resources\pcons\Dwarven_Ale.png" />
+    <Image Include="resources\pcons\Essence_of_Celerity.png" />
+    <Image Include="resources\pcons\Fruitcake.png" />
+    <Image Include="resources\pcons\Golden_Egg.png" />
+    <Image Include="resources\pcons\Grail_of_Might.png" />
+    <Image Include="resources\pcons\Green_Rock_Candy.png" />
+    <Image Include="resources\pcons\Lunar_Fortune.png" />
+    <Image Include="resources\pcons\Pahnai_Salad.png" />
+    <Image Include="resources\pcons\Red_Rock_Candy.png" />
+    <Image Include="resources\pcons\Slice_of_Pumpkin_Pie.png" />
+    <Image Include="resources\pcons\Sugary_Blue_Drink.png" />
+    <Image Include="resources\pcons\War_Supplies.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GWToolBoxCn.rc">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)\GWToolBoxDll\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{75CF21C9-CE28-4CCC-8487-40018E464BA8}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>GWToolBoxCn</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;GWTOOLBOXCN_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;GWTOOLBOXCN_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_USRDLL;NOMINMAX;_USE_MATH_DEFINES;WIN32_LEAN_AND_MEAN;IMGUI_USER_CONFIG="D:\Ranger\Documents\Visual Studio 2015\Source\Repos\GWTBInstaller\GWToolBoxCn\GWToolboxdll\imconfig.h";UTF8PROC_STATIC;GWTOOLBOXDLL_VERSION="4.2.0.7";CMAKE_INTDIR="Release";GWToolboxdll_EXPORTS;_WINDLL;_MBCS</PreprocessorDefinitions>
+      <SDLCheck>
+      </SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\DirectX\Include\;$(ProjectDir)GWToolboxdll\;$(ProjectDir)Dependencies\utf8proc\;$(ProjectDir)Dependencies\SimpleIni\;$(ProjectDir);$(ProjectDir)Dependencies\imgui\;$(ProjectDir)Dependencies\;$(ProjectDir)Dependencies\GWCA\Include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <MinimalRebuild>true</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Urlmon.lib;Shlwapi.lib;Wininet.lib;Dbghelp.lib;xinput9_1_0.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;ws2_32.lib;$(ProjectDir)Release\GWCA.lib;$(ProjectDir)Release\MinHook.lib</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;GWTOOLBOXCN_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
