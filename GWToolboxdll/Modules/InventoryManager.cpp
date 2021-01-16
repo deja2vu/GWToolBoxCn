@@ -22,11 +22,11 @@ namespace {
     static ImVec4 ItemGold = ImColor(255, 204, 86).Value;
 
     static const char* bag_names[5] = {
-        "None",
-        "Backpack",
-        "Belt Pouch",
-        "Bag 1",
-        "Bag 2"
+        u8"无",
+        u8"背包",
+        u8"腰包",
+        u8"袋子1",
+        u8"袋子2"
     };
     static bool IsMapReady()
     {
@@ -142,7 +142,7 @@ void InventoryManager::IdentifyAll(IdentifyAllType type) {
     Item *kit = context_item.item();
     if (!kit || !kit->IsIdentificationKit()) {
         CancelIdentify();
-        Log::Warning("The identification kit was consumed");
+        Log::Warning(u8"鉴定工具已消耗完");
         return;
     }
     Identify(unid, kit);
@@ -180,7 +180,7 @@ void InventoryManager::ContinueSalvage() {
         salvaged_count++;
     if (current_item && current_item->quantity == pending_salvage_item.quantity) {
         CancelSalvage();
-        Log::Error("Salvage flagged as complete, but item still exists in slot %d/%d", current_item->bag->index+1, current_item->slot+1);
+        Log::Error(u8"拆解过程完成, 但仍有物品 %d/%d 没有拆解 ", current_item->bag->index+1, current_item->slot+1);
         return;
     }
     if (pending_cancel_salvage) {
@@ -200,7 +200,7 @@ void InventoryManager::SalvageAll(SalvageAllType type) {
         FetchPotentialItems();
         if (!potential_salvage_all_items.size()) {
             CancelSalvage();
-            Log::Warning("No items to salvage");
+            Log::Warning(u8"没有可拆解的物品");
             return;
         }
         show_salvage_all_popup = true;
@@ -216,18 +216,18 @@ void InventoryManager::SalvageAll(SalvageAllType type) {
     Item *kit = context_item.item();
     if (!kit || !kit->IsSalvageKit()) {
         CancelSalvage();
-        Log::Warning("The salvage kit was consumed");
+        Log::Warning(u8"拆解工具已消耗完");
         return;
     }
     if (!potential_salvage_all_items.size()) {
-        Log::Info("Salvaged %d items", salvaged_count);
+        Log::Info(u8"已拆解 %d 物品", salvaged_count);
         CancelSalvage();
         return;
     }
     std::pair<GW::Bag*, uint32_t> available_slot = GetAvailableInventorySlot();
     if (!available_slot.first) {
         CancelSalvage();
-        Log::Warning("No more space in inventory");
+        Log::Warning(u8"仓库的空间不足");
         return;
     }
     PotentialItem* ref = *potential_salvage_all_items.begin();
@@ -484,23 +484,25 @@ bool InventoryManager::IsPendingSalvage() {
     return false;
 }
 void InventoryManager::DrawSettingInternal() {
-    ImGui::TextDisabled("This module is responsible for salvaging and identifying functions either by ctrl + clicking on a salvage or identification kit, or by using the command /salvage <type>");
-    ImGui::Text("Salvage All options:");
+    ImGui::TextDisabled(u8"这个模块用来拆解和鉴定物品，按住ctrl的同时,左击 一个拆解或鉴定工具. 也可直接使用命令行  /salvage <物品的类型(type)>");
+    ImGui::Text(u8"全部拆解设置项:");
     ImGui::SameLine();
-    ImGui::TextDisabled("Note: Salvage All will only salvage items that are identified.");
-    ImGui::Checkbox("Only use Superior Salvage Kits with /salvage command",&only_use_superior_salvage_kits);
-    ImGui::ShowHelp("Salvaging items with lesser salvage kits produce less materials.\nSalvaging items with superior salvage kits can produce rare materials.\n\nCtrl + clicking on a normal Salvage Kit will still allow you to use Salvage All.");
-    ImGui::Checkbox("Salvage Rare Materials", &salvage_rare_mats);
-    ImGui::ShowHelp("Untick to skip salvagable rare materials when checking for salvagable items");
-    ImGui::Text("Salvage from:");
-    ImGui::ShowHelp("Only ticked bags will be checked for salvagable items");
-    ImGui::Checkbox("Backpack", &bags_to_salvage_from[GW::Constants::Bag::Backpack]);
+    ImGui::TextDisabled(u8"提示: 全部拆解只会拆解已经鉴定过的物品.");
+    ImGui::Checkbox(u8"只有在命令行中 /salvage 才会使用高级拆解工具进行拆解",&only_use_superior_salvage_kits);
+    ImGui::ShowHelp(u8"选中后,不用高级拆解工具进行拆解\n使用普通的拆解工具只能拆出普通的材料.\n使用高级拆解工具可以拆出稀有的材料.\
+    \n专业拆解工具可以同时拆解普通和稀有的材料 \
+    \n\n按住Ctrl的同时，左击普通拆解工具,你还是可以拆解所有的物品.");
+    ImGui::Checkbox(u8"拆解的物品包含:能拆解出稀有材料的物品", &salvage_rare_mats);
+    ImGui::ShowHelp(u8"当取消选中后,拆解时,系统会自动跳过那些可能会拆解出稀有材料的物品");
+    ImGui::Text(u8"拆解的物品，只在选中的包里:");
+    ImGui::ShowHelp(u8"选中后,只会拆解选中的包之中的物品");
+    ImGui::Checkbox(u8"背包", &bags_to_salvage_from[GW::Constants::Bag::Backpack]);
     ImGui::SameLine();
-    ImGui::Checkbox("Belt Pouch", &bags_to_salvage_from[GW::Constants::Bag::Belt_Pouch]);
+    ImGui::Checkbox(u8"腰包", &bags_to_salvage_from[GW::Constants::Bag::Belt_Pouch]);
     ImGui::SameLine();
-    ImGui::Checkbox("Bag 1", &bags_to_salvage_from[GW::Constants::Bag::Bag_1]);
+    ImGui::Checkbox(u8"袋子1", &bags_to_salvage_from[GW::Constants::Bag::Bag_1]);
     ImGui::SameLine();
-    ImGui::Checkbox("Bag 2", &bags_to_salvage_from[GW::Constants::Bag::Bag_2]);
+    ImGui::Checkbox(u8"袋子2", &bags_to_salvage_from[GW::Constants::Bag::Bag_2]);
 }
 void InventoryManager::Update(float delta) {
     UNREFERENCED_PARAMETER(delta);
@@ -508,7 +510,7 @@ void InventoryManager::Update(float delta) {
         if (IsPendingSalvage()) {
             if ((clock() / CLOCKS_PER_SEC) - pending_salvage_at > 5) {
                 is_salvaging = is_salvaging_all = false;
-                Log::Warning("Failed to salvage item in slot %d/%d", pending_salvage_item.bag, pending_salvage_item.slot);
+                Log::Warning(u8"拆解物品 %d/%d 发生失败", pending_salvage_item.bag, pending_salvage_item.slot);
             }
         }
         else {
@@ -520,7 +522,7 @@ void InventoryManager::Update(float delta) {
         if (IsPendingIdentify()) {
             if ((clock() / CLOCKS_PER_SEC) - pending_identify_at > 5) {
                 is_identifying = is_identifying_all = false;
-                Log::Warning("Failed to identify item in slot %d/%d", pending_identify_item.bag, pending_identify_item.slot);
+                Log::Warning(u8"鉴定物品 %d/%d 发生失败", pending_identify_item.bag, pending_identify_item.slot);
             }
         }
         else {
@@ -536,9 +538,9 @@ void InventoryManager::Update(float delta) {
 void InventoryManager::Draw(IDirect3DDevice9* device) {
     UNREFERENCED_PARAMETER(device);
     if (show_item_context_menu)
-        ImGui::OpenPopup("Item Context Menu");
+        ImGui::OpenPopup(u8"物品栏菜单");
     show_item_context_menu = false;
-    if (ImGui::BeginPopup("Item Context Menu")) {
+    if (ImGui::BeginPopup(u8"物品栏菜单")) {
         if (context_item_name_s.empty() && !context_item_name_ws.empty()) {
             context_item_name_s = GuiUtils::WStringToString(context_item_name_ws);
         }
@@ -559,16 +561,16 @@ void InventoryManager::Draw(IDirect3DDevice9* device) {
         }
         if (context_item_actual && context_item_actual->IsIdentificationKit()) {
             IdentifyAllType type = IdentifyAllType::None;
-            if(ImGui::Button("Identify All Items", size))
+            if(ImGui::Button(u8"鉴定所有物品", size))
                 type = IdentifyAllType::All;
             ImGui::PushStyleColor(ImGuiCol_Text, ItemBlue);
-            if (ImGui::Button("Identify All Blue Items", size))
+            if (ImGui::Button(u8"鉴定所有物品(蓝)", size))
                 type = IdentifyAllType::Blue;
             ImGui::PushStyleColor(ImGuiCol_Text, ItemPurple);
-            if (ImGui::Button("Identify All Purple Items", size))
+            if (ImGui::Button(u8"鉴定所有物品(紫)", size))
                 type = IdentifyAllType::Purple;
             ImGui::PushStyleColor(ImGuiCol_Text, ItemGold);
-            if(ImGui::Button("Identify All Gold Items", size))
+            if(ImGui::Button(u8"鉴定所有物品(金)", size))
                 type = IdentifyAllType::Gold;
             ImGui::PopStyleColor(3);
             if (type != IdentifyAllType::None) {
@@ -583,16 +585,16 @@ void InventoryManager::Draw(IDirect3DDevice9* device) {
         }
         else if (context_item_actual && context_item_actual->IsSalvageKit()) {
             SalvageAllType type = SalvageAllType::None;
-            if (ImGui::Button("Salvage All White Items", size))
+            if (ImGui::Button(u8"拆解所有物品(白)", size))
                 type = SalvageAllType::White;
             ImGui::PushStyleColor(ImGuiCol_Text, ItemBlue);
-            if (ImGui::Button("Salvage All Blue & Lesser Items", size))
+            if (ImGui::Button(u8"拆解所有物品(蓝,白)", size))
                 type = SalvageAllType::BlueAndLower;
             ImGui::PushStyleColor(ImGuiCol_Text, ItemPurple);
-            if (ImGui::Button("Salvage All Purple & Lesser Items", size))
+            if (ImGui::Button(u8"拆解所有物品(紫,蓝,白)", size))
                 type = SalvageAllType::PurpleAndLower;
             ImGui::PushStyleColor(ImGuiCol_Text, ItemGold);
-            if (ImGui::Button("Salvage All Gold & Lesser Items", size))
+            if (ImGui::Button(u8"拆解所有物品(金,紫，蓝，白)", size))
                 type = SalvageAllType::GoldAndLower;
             ImGui::PopStyleColor(3);
             if (type != SalvageAllType::None) {
@@ -609,10 +611,10 @@ void InventoryManager::Draw(IDirect3DDevice9* device) {
         ImGui::EndPopup();
     }
     if (show_salvage_all_popup) {
-        ImGui::OpenPopup("Salvage All?");
+        ImGui::OpenPopup(u8"拆解全部物品?");
         show_salvage_all_popup = false;
     }
-    if (ImGui::BeginPopupModal("Salvage All?", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+    if (ImGui::BeginPopupModal(u8"拆解全部物品?", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
         if (!is_salvaging_all && salvage_all_type == SalvageAllType::None) {
             // Salvage has just completed, progress window still open - close it now.
             CancelSalvage();
@@ -620,16 +622,16 @@ void InventoryManager::Draw(IDirect3DDevice9* device) {
         }
         else if (is_salvaging_all) {
             // Salvage in progress
-            ImGui::Text("Salvaging items...");
-            if (ImGui::Button("Cancel", ImVec2(120, 0))) {
+            ImGui::Text(u8"拆解物品中...");
+            if (ImGui::Button(u8"取消", ImVec2(120, 0))) {
                 pending_cancel_salvage = true;
                 ImGui::CloseCurrentPopup();
             }
         }
         else {
             // Are you sure prompt; at this point we've already got the list of items via FetchPotentialItems()
-            ImGui::Text("You're about to salvage %d item%s:", potential_salvage_all_items.size(), potential_salvage_all_items.size() == 1 ? "" : "s");
-            ImGui::TextDisabled("Untick an item to skip salvaging");
+            ImGui::Text(u8"你将要开始拆解 %d  物品%s:", potential_salvage_all_items.size(), potential_salvage_all_items.size() == 1 ? "" : "s");
+            ImGui::TextDisabled(u8"不选中一个物品，可以跳过此物品的拆解");
             static const std::regex sanitiser("<[^>]+>");
             static const std::wregex wsanitiser(L"<[^>]+>");
             static const std::wstring wiki_url(L"https://wiki.guildwars.com/wiki/");
@@ -690,16 +692,16 @@ void InventoryManager::Draw(IDirect3DDevice9* device) {
                 ImGui::PopID();
                 has_items_to_salvage |= pi->proceed;
             }
-            ImGui::Text("\n\nAre you sure?");
+            ImGui::Text(u8"\n\n确定吗?");
             ImVec2 btn_width = ImVec2(ImGui::GetWindowContentRegionWidth() - ImGui::GetStyle().ItemSpacing.x, 0);
             if (has_items_to_salvage) {
                 btn_width.x /= 2;
-                if (ImGui::Button("OK", btn_width)) {
+                if (ImGui::Button(u8"确认", btn_width)) {
                     is_salvaging_all = true;
                 }
                 ImGui::SameLine();
             }
-            if (ImGui::Button("Cancel", btn_width)) {
+            if (ImGui::Button(u8"取消", btn_width)) {
                 CancelSalvage();
                 ImGui::CloseCurrentPopup();
             }
