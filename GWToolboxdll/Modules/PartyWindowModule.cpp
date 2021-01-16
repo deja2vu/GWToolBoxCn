@@ -321,9 +321,10 @@ bool PartyWindowModule::ShouldAddAgentToPartyWindow(GW::Agent* _a) {
     return ShouldAddAgentToPartyWindow(0x20000000u | a->player_number);
 }
 void PartyWindowModule::DrawSettingInternal() {
-    ImGui::Checkbox("Add player numbers to party window", &add_player_numbers_to_party_window);
-    ImGui::ShowHelp("Will update on next map");
-    if (ImGui::Checkbox(u8"追加特定的NPC到队伍栏中", &add_npcs_to_party_window))
+    ImGui::Checkbox(u8"每个队伍成员名字后加上序列号", &add_player_numbers_to_party_window);
+    ImGui::ShowHelp(u8"比如队伍成员有个叫gw fans,队伍中的排2,加上序列号后显示的就是gw fans(2)\n"
+    u8"选中中,当你刷新地图后,就能看到效果");
+    if (ImGui::Checkbox(u8"追加特定的NPC到队伍资讯栏中", &add_npcs_to_party_window))
         CheckMap();
     ImGui::ShowHelp(u8"选中后,可以把特定NPC追加到你的队伍栏中(NPC需要出现在你的雷达中).");
     if (!add_npcs_to_party_window)

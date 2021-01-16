@@ -723,7 +723,6 @@ void GameSettings::PingItem(GW::Item* item, uint32_t parts) {
         printf("Pinged item:\n");
         StringDecoderWindow::PrintEncStr(out.c_str());
     #endif
-
     PendingChatMessage* m = PendingChatMessage::queueSend(GW::Chat::Channel::CHANNEL_GROUP, out.c_str(), p->name_enc);
     if (m) GameSettings::Instance().pending_messages.push_back(m);
 }
@@ -1156,25 +1155,28 @@ void GameSettings::SaveSettings(CSimpleIni* ini) {
 }
 
 void GameSettings::DrawInventorySettings() {
-    ImGui::Checkbox("Move items from/to storage with Control+Click", &move_item_on_ctrl_click);
+    ImGui::Checkbox(u8"通过按住control键的同时，左击物品来移动物品(从仓库移动到包,从包移动到仓库)", &move_item_on_ctrl_click);
     ImGui::Indent();
-    ImGui::Checkbox("Move item to current open storage pane on click", &move_item_to_current_storage_pane);
-    ImGui::ShowHelp("Enabled: Using Control+Click on an item in inventory with storage chest open,\n"
-        "try to deposit item into the currently displayed storage pane.\n"
-        "Disabled: Item will be stored into any available stack/slot in the chest.");
+    ImGui::Checkbox(u8"附加项,左击包中的物品后,移动到当前仓库所在的仓库栏里", &move_item_to_current_storage_pane);
+    ImGui::ShowHelp(u8":此附加项选中后, 左击包中的物品后,移动到当前仓库的物品标签栏中,\n"
+        u8"物品标签栏指的是物品仓库I,II,IV等\n"
+        u8"系统会尝试把你点击的物品存入到当前显示的物品仓库标签栏中.\n"
+        u8"默认(未选中的时候): 你点击的物品会自动存入仓库中任何可用的格子中.\n"
+        u8"如你点击的物品可叠加到同一个格子里，则叠加入此类物品所在的格子中");
     ImGui::Unindent();
-    ImGui::Checkbox("Shorthand item description on weapon ping", &shorthand_item_ping);
-    ImGui::ShowHelp("Include a concise description of your equipped weapon when ctrl+clicking a weapon set");
+    ImGui::Checkbox(u8"发送详细的武器搭配栏的信息到聊天栏", &shorthand_item_ping);
+    ImGui::ShowHelp(u8"选中后,按住键盘ctrl的同时,鼠标左击武器搭配栏的时候，取代系统默认的发送格式,采用助手的发送格式.\n"
+    u8"助手格式:");
 }
 
 void GameSettings::DrawPartySettings() {
-    if(ImGui::Checkbox("Tick is a toggle", &tick_is_toggle))
+    if(ImGui::Checkbox(u8"简化队伍资讯栏中的tick", &tick_is_toggle))
         GW::PartyMgr::SetTickToggle(tick_is_toggle);
-    ImGui::ShowHelp("Ticking in party window will work as a toggle instead of opening the menu");
-    ImGui::Checkbox("Automatically accept party invitations when ticked", &auto_accept_invites);
-    ImGui::ShowHelp("When you're invited to join someone elses party");
-    ImGui::Checkbox("Automatically accept party join requests when ticked", &auto_accept_join_requests);
-    ImGui::ShowHelp("When a player wants to join your existing party");
+    ImGui::ShowHelp(u8"取代队伍资讯栏中tick的下拉模式,只需左击tick,就能从未就绪和准备完毕之间切换");
+    ImGui::Checkbox(u8"当你的队伍tick是准备完毕的状态下,自动接受其它队伍的邀请", &auto_accept_invites);
+    ImGui::ShowHelp(u8"选中后,可以自动接受别人发你的组队邀请.");
+    ImGui::Checkbox(u8"当你的队伍tick是准备完毕的状态下,自动接受其它玩家的进队请求", &auto_accept_join_requests);
+    ImGui::ShowHelp(u8"选中后,如果你是队长,你可以自动接受其它玩家加入到你队伍的请求");
 }
 
 void GameSettings::DrawChatSettings() {
