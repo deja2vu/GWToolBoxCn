@@ -275,10 +275,10 @@ void PartyWindowModule::LoadDefaults() {
 
     AddSpecialNPC({ "Vale friendly spirit 1", GW::Constants::ModelID::UW::TorturedSpirit1, GW::Constants::MapID::The_Underworld });
     AddSpecialNPC({ "Vale friendly spirit 2", GW::Constants::ModelID::UW::TorturedSpirit1 + 1, GW::Constants::MapID::The_Underworld });
-    AddSpecialNPC({ "Pits friendly spirit 1", GW::Constants::ModelID::UW::PitsSoul1, GW::Constants::MapID::The_Underworld });
-    AddSpecialNPC({ "Pits friendly spirit 2", GW::Constants::ModelID::UW::PitsSoul2, GW::Constants::MapID::The_Underworld });
-    AddSpecialNPC({ "Pits friendly spirit 3", GW::Constants::ModelID::UW::PitsSoul3, GW::Constants::MapID::The_Underworld });
-    AddSpecialNPC({ "Pits friendly spirit 4", GW::Constants::ModelID::UW::PitsSoul4, GW::Constants::MapID::The_Underworld });
+    AddSpecialNPC({ u8"被拘禁的灵魂 1", GW::Constants::ModelID::UW::PitsSoul1, GW::Constants::MapID::The_Underworld });
+    AddSpecialNPC({ u8"被拘禁的灵魂 2", GW::Constants::ModelID::UW::PitsSoul2, GW::Constants::MapID::The_Underworld });
+    AddSpecialNPC({ u8"被拘禁的灵魂 3", GW::Constants::ModelID::UW::PitsSoul3, GW::Constants::MapID::The_Underworld });
+    AddSpecialNPC({ u8"被拘禁的灵魂 4", GW::Constants::ModelID::UW::PitsSoul4, GW::Constants::MapID::The_Underworld });
 
     AddSpecialNPC({ "Gyala Hatchery siege turtle", 3582, GW::Constants::MapID::Gyala_Hatchery_outpost_mission });
     
@@ -291,7 +291,7 @@ void PartyWindowModule::LoadDefaults() {
     AddSpecialNPC({ "Naga Shaman (Polymock)", GW::Constants::ModelID::PolymockSummon::NagaShaman, GW::Constants::MapID::None });
 
     //AddSpecialNPC({ "Ebon Vanguard Assassin", 5848, GW::Constants::MapID::None });
-    AddSpecialNPC({ "Ebon Vanguard Assassin", GW::Constants::ModelID::EbonVanguardAssassin, GW::Constants::MapID::None });
+    AddSpecialNPC({ u8"黑檀先锋队暗杀者支援", GW::Constants::ModelID::EbonVanguardAssassin, GW::Constants::MapID::None });
 
     AddSpecialNPC({ "Ben Wolfson Pre-Searing", 1512, GW::Constants::MapID::None });
 }
@@ -323,20 +323,20 @@ bool PartyWindowModule::ShouldAddAgentToPartyWindow(GW::Agent* _a) {
 void PartyWindowModule::DrawSettingInternal() {
     ImGui::Checkbox("Add player numbers to party window", &add_player_numbers_to_party_window);
     ImGui::ShowHelp("Will update on next map");
-    if (ImGui::Checkbox("Add special NPCs to party window", &add_npcs_to_party_window))
+    if (ImGui::Checkbox(u8"追加特定的NPC到队伍栏中", &add_npcs_to_party_window))
         CheckMap();
-    ImGui::ShowHelp("Adds special NPCs to the Allies section of the party window within compass range.");
+    ImGui::ShowHelp(u8"选中后,可以把特定NPC追加到你的队伍栏中(NPC需要出现在你的雷达中).");
     if (!add_npcs_to_party_window)
         return;
-    ImGui::TextDisabled("Only works in an explorable area. Only works on NPCs; not enemies, minions or spirits.");
+    ImGui::TextDisabled(u8"只在探索区域有效果,只对NPC这个种类有效，其他诸如宠物，死灵的骨头，灵都无效.");
     float fontScale = ImGui::GetIO().FontGlobalScale;
-    float cols[3] = { 256.0f * fontScale, 352.0f * fontScale, 448.0f * fontScale };
+    float cols[3] = { 256.0f * fontScale, 372.0f * fontScale, 428.0f * fontScale };
 
-    ImGui::Text("Name");
+    ImGui::Text(u8"名称(Name)");
     ImGui::SameLine(cols[0]);
-    ImGui::Text("Model ID");
+    ImGui::Text(u8"模型代号(Model ID)");
     ImGui::SameLine(cols[1]);
-    ImGui::Text("Map");
+    ImGui::Text(u8"地图(Map)");
     ImGui::Separator();
     ImGui::BeginChild("user_defined_npcs_to_add_scroll",ImVec2(0,200.0f));
     for (size_t i = 0; i < user_defined_npcs.size();i++) {
@@ -355,7 +355,7 @@ void PartyWindowModule::DrawSettingInternal() {
         bool clicked = ImGui::Button(" X ");
         ImGui::PopID();
         if(clicked) {
-            Log::Info("Removed special NPC %s (%d)", npc->alias.c_str(), npc->model_id);
+            Log::Info(u8"已移出相关的NPC %s (%d)", npc->alias.c_str(), npc->model_id);
             RemoveSpecialNPC(npc->model_id);
             CheckMap();
             break;
@@ -364,24 +364,24 @@ void PartyWindowModule::DrawSettingInternal() {
     ImGui::EndChild();
     ImGui::Separator();
     bool submitted = false;
-    ImGui::Text("Add new:");
+    ImGui::Text(u8"新增标记:");
     ImGui::InputText("Name", new_npc_alias, 128);
     ImGui::InputInt("Model ID", &new_npc_model_id);
-    ImGui::InputInt("Map ID (0 = Any)", &new_npc_map_id);
-    submitted |= ImGui::Button("Add");
+    ImGui::InputInt(u8"Map ID (0 = 所有)", &new_npc_map_id);
+    submitted |= ImGui::Button(u8"点此新增");
     if (submitted) {
         if (new_npc_model_id < 1)
-            return Error("Invalid model id");
+            return Error(u8"model id不可用");
         if (new_npc_map_id < 0 || new_npc_map_id > static_cast<int>(GW::Constants::MapID::Count))
-            return Error("Invalid map id");
+            return Error(u8"map id不可用");
         std::string alias_str(new_npc_alias);
         if (alias_str.empty())
-            return Error("Empty value for Name");
+            return Error(u8"Name不能为空");
         std::map<uint32_t, SpecialNPCToAdd*>::iterator it = user_defined_npcs_by_model_id.find(static_cast<uint32_t>(new_npc_model_id));
         if (it != user_defined_npcs_by_model_id.end())
-            return Error("Special NPC %s is already defined for model_id %d", it->second->alias.c_str(), new_npc_model_id);
+            return Error(u8"对应的 NPC %s 的 model_id %d 已经被使用", it->second->alias.c_str(), new_npc_model_id);
         AddSpecialNPC({ alias_str.c_str(), new_npc_model_id,static_cast<GW::Constants::MapID>(new_npc_map_id) });
-        Log::Info("Added special NPC %s (%d)", alias_str.c_str(), new_npc_model_id);
+        Log::Info(u8"已新增相应的 NPC %s (%d)", alias_str.c_str(), new_npc_model_id);
         CheckMap();
     }
 }
