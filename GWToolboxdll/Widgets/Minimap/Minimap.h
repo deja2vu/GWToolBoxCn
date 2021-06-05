@@ -1,5 +1,4 @@
 #pragma once
-
 #include <GWCA/GameEntities/Party.h>
 
 #include <Defines.h>

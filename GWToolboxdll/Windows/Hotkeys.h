@@ -99,13 +99,39 @@ private:
     GW::Item* item = nullptr;
     std::chrono::time_point<std::chrono::steady_clock> start_time;
     std::chrono::time_point<std::chrono::steady_clock> last_try;
-    wchar_t* item_name = L"";
+    //char item_name[64] = {};
+    char item_name[193] = { 0, };
+    bool showSettingUI = false;
+    CRITICAL_SECTION cs;
+    struct ItemPrimaryKey
+    {
+        uint32_t model_id, model_file_id, mod_struct_size, interaction;
+    };
+    ItemPrimaryKey* key = nullptr;
+    uint32_t index = 0;
+public:
+    static std::vector<uint32_t> nameIndex;
+private:
+    bool IsSameItem(const GW::Item* const itemV) {
+        return key && itemV
+            && (!key->model_id || !itemV->model_id || key->model_id == itemV->model_id)
+            && (!key->model_file_id || !itemV->model_file_id || key->model_file_id == itemV->model_file_id)
+            && (!key->mod_struct_size || !itemV->mod_struct_size || key->mod_struct_size == itemV->mod_struct_size)
+            && (!key->interaction || !itemV->interaction || key->interaction == itemV->interaction);
+    }
+    void UpdateStatus();
+    const GW::Item* LookUpItem();
+    bool IsEquiped();
 public:
     static const char* IniSection() { return "EquipItem"; }
     const char* Name() const override { return IniSection(); }
 
     HotkeyEquipItem(CSimpleIni* ini, const char* section);
+    ~HotkeyEquipItem() {
+        //DeleteCriticalSection(&cs);
 
+        delete key;
+    };
     void Save(CSimpleIni* ini, const char* section) const override;
 
     void Draw() override;
@@ -113,6 +139,9 @@ public:
     void Execute() override;
 
     bool IsEquippable(GW::Item* item);
+    static void AddIndex(uint32_t& idx);
+    static void RemoveIndex(const uint32_t idx);
+    static bool HasIndex(const uint32_t idx);
 };
 
 // hotkey to use an item

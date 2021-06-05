@@ -45,7 +45,7 @@ bool TBHotkey::show_active_in_header = true;
 bool TBHotkey::show_run_in_header = true;
 bool TBHotkey::hotkeys_changed = false;
 unsigned int TBHotkey::cur_ui_id = 0;
-
+std::vector<uint32_t> HotkeyEquipItem::nameIndex = {};
 TBHotkey *TBHotkey::HotkeyFactory(CSimpleIni *ini, const char *section)
 {
     std::string str(section);
@@ -471,112 +471,275 @@ void HotkeyUseItem::Execute()
     }
 }
 
-HotkeyEquipItem::HotkeyEquipItem(CSimpleIni *ini, const char *section)
+
+void HotkeyEquipItem::UpdateStatus()
+{
+    if (bag_idx < 1 || bag_idx > 5 || slot_idx < 1 || slot_idx > 25) {
+        if (show_error_on_failure)
+            Log::Error("Invalid bag slot %d/%d!", bag_idx, slot_idx);
+        return;
+    }
+    GW::Bag* b = GW::Items::GetBag(bag_idx);
+    if (!b) {
+        if (show_error_on_failure)
+            Log::Error("Bag #%d not found!", bag_idx);
+        return;
+    }
+    GW::ItemArray items = b->items;
+    if (!items.valid() || slot_idx > items.size()) {
+        if (show_error_on_failure)
+            Log::Error("Invalid bag slot %d/%d!", bag_idx, slot_idx);
+        return;
+    }
+    GW::Item* itemV = items.at(slot_idx - 1);
+    if (!IsEquippable(itemV)) {
+        if (show_error_on_failure)
+            Log::Error("No equippable item in bag %d slot %d", bag_idx,
+                slot_idx);
+        //item = nullptr;
+        return;
+    }
+    EnterCriticalSection(&cs);
+    key->model_id = itemV->model_id;
+    key->model_file_id = itemV->model_file_id;
+    key->mod_struct_size = itemV->mod_struct_size;
+    key->interaction = itemV->interaction;
+    LeaveCriticalSection(&cs);
+}
+const GW::Item* HotkeyEquipItem::LookUpItem()
+{
+    GW::Bag** bags = GW::Items::GetBagArray();
+    GW::Bag* bag = NULL;
+
+    for (int bagIndex = 1; bagIndex <= 5; ++bagIndex) {
+        bag = bags[bagIndex];
+        if (bag != NULL) {
+            GW::ItemArray items = bag->items;
+            for (size_t i = 0; i < items.size(); i++) {
+                if (items[i]) {
+                    if ((items[i]->model_id == key->model_id)
+                        && (items[i]->model_file_id == key->model_file_id)
+                        && (items[i]->mod_struct_size == key->mod_struct_size)
+                        && (items[i]->interaction == key->interaction)
+                        ) {
+
+                        return items[i];
+                    }
+                }
+            }
+        }
+    }
+
+    return NULL;
+
+}
+bool HotkeyEquipItem::IsEquiped()
+{
+    GW::Bag* Mybag = GW::Items::GetBag((uint32_t)GW::Constants::Bag::Equipped_Items);
+    if (!Mybag) return true;
+    GW::ItemArray items = Mybag->items;
+    for (uint32_t i = 0; i < items.size(); i++) {
+        if (items[i]) {
+            if ((items[i]->model_id == key->model_id)
+                && (items[i]->model_file_id == key->model_file_id)
+                && (items[i]->mod_struct_size == key->mod_struct_size)
+                && (items[i]->interaction == key->interaction)
+                ) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+HotkeyEquipItem::HotkeyEquipItem(CSimpleIni* ini, const char* section)
     : TBHotkey(ini, section)
 {
     // @Cleanup: Add error handling
-    bag_idx = static_cast<size_t>(ini->GetLongValue(section, "Bag", 0));
-    slot_idx = static_cast<size_t>(ini->GetLongValue(section, "Slot", 0));
+    key = new ItemPrimaryKey();
+    InitializeCriticalSection(&cs);
+    //bag_idx = static_cast<size_t>(ini->GetLongValue(section, "Bag", 0));
+    //slot_idx = static_cast<size_t>(ini->GetLongValue(section, "Slot", 0));
+    index = static_cast<size_t>(ini->GetLongValue(section, "index", 0));
+    this->AddIndex(index);
+    const char* name = ini->GetValue(section, "item_name", std::to_string(index).c_str());
+    memcpy(item_name, name, strlen(name) + 1);
+    key->model_id = static_cast<size_t>(ini->GetLongValue(section, "model_id", 0));
+    key->model_file_id = static_cast<size_t>(ini->GetLongValue(section, "model_file_id", 0));
+    key->mod_struct_size = static_cast<size_t>(ini->GetLongValue(section, "mod_struct_size", 0));
+    key->interaction = static_cast<size_t>(ini->GetLongValue(section, "interaction", 0));
 }
-void HotkeyEquipItem::Save(CSimpleIni *ini, const char *section) const
+void HotkeyEquipItem::Save(CSimpleIni* ini, const char* section) const
 {
     TBHotkey::Save(ini, section);
-    ini->SetLongValue(section, "Bag", static_cast<long>(bag_idx));
-    ini->SetLongValue(section, "Slot", static_cast<long>(slot_idx));
+    //ini->SetLongValue(section, "Bag", static_cast<long>(bag_idx));
+    //ini->SetLongValue(section, "Slot", static_cast<long>(slot_idx));
+    ini->SetLongValue(section, "index", static_cast<long>(index));
+    ini->SetLongValue(section, "model_id", static_cast<long>(key->model_id));
+    ini->SetLongValue(section, "model_file_id", static_cast<long>(key->model_file_id));
+    ini->SetLongValue(section, "mod_struct_size", static_cast<long>(key->mod_struct_size));
+    ini->SetLongValue(section, "interaction", static_cast<long>(key->interaction));
+    ini->SetValue(section, "item_name", (char*)item_name);
 }
-void HotkeyEquipItem::Description(char *buf, size_t bufsz) const
+void HotkeyEquipItem::Description(char* buf, size_t bufsz) const
 {
-    snprintf(buf, bufsz, "Equip Item in bag %d slot %d", bag_idx, slot_idx);
+    snprintf(buf, bufsz, u8"装备 %s ", item_name);
 }
 void HotkeyEquipItem::Draw()
 {
-    if (ImGui::InputInt(u8"角色包的序号(1-5)", (int *)&bag_idx))
-        hotkeys_changed = true;
-    if (ImGui::InputInt(u8"角色仓库的序号(1-25)", (int *)&slot_idx))
-        hotkeys_changed = true;
-    if (ImGui::Checkbox(u8"失败的时候，消息提示我",
-                        &show_error_on_failure))
+    if (ImGui::Button(u8"请输入装备在包里的位置", ImVec2(ImGui::GetWindowContentRegionWidth(), 0))) {
+        showSettingUI = true;
+    }
+    ImGui::SameLine();
+    ImGui::ShowHelp(u8"获取装备状态");
+    if (showSettingUI) {
+        ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+        ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+        ImGui::Begin(u8"设置装备状态", &showSettingUI, ImGuiWindowFlags_AlwaysAutoResize);
+        if (ImGui::InputInt(u8"包 (1-5)", (int*)&bag_idx))
+            hotkeys_changed = true;
+        if (ImGui::InputInt(u8"槽位 (1-25)", (int*)&slot_idx))
+            hotkeys_changed = true;
+        if (ImGui::InputText(u8"装备名称", item_name, 193))
+            hotkeys_changed = true;
+        if (ImGui::Button(u8"保存装备状态", ImVec2(400, 0))) {
+            UpdateStatus();
+            showSettingUI = false;
+        }
+        ImGui::End();
+    }
+    if (ImGui::Checkbox(u8"当发生错误的时候,提示我",
+        &show_error_on_failure))
         hotkeys_changed = true;
 }
-bool HotkeyEquipItem::IsEquippable(GW::Item *_item)
+bool HotkeyEquipItem::IsEquippable(GW::Item* _item)
 {
     if (!_item)
         return false;
     switch (static_cast<GW::Constants::ItemType>(_item->type)) {
-        case GW::Constants::ItemType::Axe:
-        case GW::Constants::ItemType::Boots:
-        case GW::Constants::ItemType::Bow:
-        case GW::Constants::ItemType::Chestpiece:
-        case GW::Constants::ItemType::Offhand:
-        case GW::Constants::ItemType::Gloves:
-        case GW::Constants::ItemType::Hammer:
-        case GW::Constants::ItemType::Headpiece:
-        case GW::Constants::ItemType::Leggings:
-        case GW::Constants::ItemType::Wand:
-        case GW::Constants::ItemType::Shield:
-        case GW::Constants::ItemType::Staff:
-        case GW::Constants::ItemType::Sword:
-        case GW::Constants::ItemType::Daggers:
-        case GW::Constants::ItemType::Scythe:
-        case GW::Constants::ItemType::Spear:
-        case GW::Constants::ItemType::Costume:
-            break;
-        default:
-            return false;
-            break;
+    case GW::Constants::ItemType::Axe:
+    case GW::Constants::ItemType::Boots:
+    case GW::Constants::ItemType::Bow:
+    case GW::Constants::ItemType::Chestpiece:
+    case GW::Constants::ItemType::Offhand:
+    case GW::Constants::ItemType::Gloves:
+    case GW::Constants::ItemType::Hammer:
+    case GW::Constants::ItemType::Headpiece:
+    case GW::Constants::ItemType::Leggings:
+    case GW::Constants::ItemType::Wand:
+    case GW::Constants::ItemType::Shield:
+    case GW::Constants::ItemType::Staff:
+    case GW::Constants::ItemType::Sword:
+    case GW::Constants::ItemType::Daggers:
+    case GW::Constants::ItemType::Scythe:
+    case GW::Constants::ItemType::Spear:
+    case GW::Constants::ItemType::Costume:
+        break;
+    default:
+        return false;
+        break;
     }
+    return true;
+    // 2021-05-02: Disabled customised check, conflicts with obfuscator module, not worth the hassle - the hotkey will fail with a message on timeout anyway - Jon
+    /*
     if (!_item->customized)
-        return true;
+    return true;
     GW::GameContext *g = GW::GameContext::instance();
     GW::CharContext *c = g ? g->character : nullptr;
     return c && c->player_name &&
-           wcscmp(c->player_name, _item->customized) == 0;
+    wcscmp(c->player_name, _item->customized) == 0;*/
+}
+void HotkeyEquipItem::RemoveIndex(const uint32_t idx)
+{
+    if (nameIndex.size() == 0) return;
+    std::vector<uint32_t>::iterator it = std::find(nameIndex.begin(), nameIndex.end(), idx);
+    if (it != nameIndex.end()) {
+        nameIndex.erase(it);
+    }
+}
+bool HotkeyEquipItem::HasIndex(const uint32_t idx)
+{
+    std::vector<uint32_t>::iterator it = std::find(nameIndex.begin(), nameIndex.end(), idx);
+    return it != nameIndex.end();
+}
+void HotkeyEquipItem::AddIndex(uint32_t& idx)
+{
+    if (idx != 0) {
+        if (HasIndex(idx)) return;
+        nameIndex.push_back(idx);
+        return;
+    }
+    if (nameIndex.size() == 0) {
+        nameIndex.push_back(1);
+        idx = 1;
+        return;
+    }
+    if (nameIndex.size() == 1) {
+        if (nameIndex.at(0) <= 1)
+        {
+            idx = nameIndex.at(0) + 1;
+        }
+        else
+            idx = nameIndex.at(0) - 1;
+        nameIndex.push_back(idx);
+        return;
+    }
+    std::sort(nameIndex.begin(), nameIndex.end());
+    idx = nameIndex.back() + 1;
+    for (std::vector<uint32_t>::iterator it = nameIndex.begin(); it != nameIndex.end(); ++it)
+    {
+        if (((it + 1) != nameIndex.end()) && ((*(it + 1) - *it) > 1)) {
+            idx = *it + 1;
+            break;
+        }
+    }
+    nameIndex.push_back(idx);
+
 }
 void HotkeyEquipItem::Execute()
 {
     if (!CanUse())
         return;
     if (!ongoing) {
-        if (bag_idx < 1 || bag_idx > 5 || slot_idx < 1 || slot_idx > 25) {
-            if (show_error_on_failure)
-                Log::Error(u8"此物品栏无法使用 %d/%d!", bag_idx, slot_idx);
-            return;
+        EnterCriticalSection(&cs);
+        item = (GW::Item*)LookUpItem();
+        uint32_t status = 0;
+        if (!item) {
+            if (IsEquiped()) {
+                status = 1;
+            }
+            else
+                status = 2;
         }
-        GW::Bag *b = GW::Items::GetBag(bag_idx);
-        if (!b) {
-            if (show_error_on_failure)
-                Log::Error(u8"此包ID为 #%d 没有找到!", bag_idx);
+        LeaveCriticalSection(&cs);
+        switch (status)
+        {
+        case 1: {
+            Log::Error("has equpied");
             return;
-        }
-        GW::ItemArray items = b->items;
-        if (!items.valid() || slot_idx > items.size()) {
-            if (show_error_on_failure)
-                Log::Error(u8"此物品栏无法使用 %d/%d!", bag_idx, slot_idx);
+        };
+        case 2: {
+            Log::Error("can't find this item");
             return;
-        }
-        item = items.at(slot_idx - 1);
-        if (!IsEquippable(item)) {
-            if (show_error_on_failure)
-                Log::Error(u8"没有可加载的道具 包ID %d 物品栏ID： %d", bag_idx,
-                           slot_idx);
-            item = nullptr;
-            return;
+        };
+        default:
+            break;
         }
         ongoing = true;
         start_time = std::chrono::steady_clock::now();
-    } else {
+    }
+    else {
         last_try = std::chrono::steady_clock::now();
         __int64 diff_mills =
             std::chrono::duration_cast<std::chrono::milliseconds>(last_try -
-                                                                  start_time)
-                .count();
+                start_time)
+            .count();
         if (diff_mills < 500) {
             return; // Wait 250ms between tries.
         }
         if (diff_mills > 5000) {
             if (show_error_on_failure)
-                Log::Error(u8"没有可加载的物品 包ID %d 物品栏ID： %d", bag_idx,
-                           slot_idx);
+                Log::Error("Failed to equip item in bag %d slot %d", bag_idx,
+                    slot_idx);
             ongoing = false;
             item = nullptr;
             return;
@@ -585,8 +748,8 @@ void HotkeyEquipItem::Execute()
 
     if (!item || !item->item_id) {
         if (show_error_on_failure)
-            Log::Error(u8"没有可加载的物品 包ID %d 物品栏ID： %d", bag_idx,
-                       slot_idx);
+            Log::Error("Failed to equip item in bag %d slot %d", bag_idx,
+                slot_idx);
         ongoing = false;
         item = nullptr;
         return;
@@ -597,10 +760,11 @@ void HotkeyEquipItem::Execute()
         item = nullptr;
         return; // Success!
     }
-    GW::AgentLiving *p = GW::Agents::GetCharacter();
+    //GW::AgentLiving *p = GW::Agents::GetCharacter();
+    GW::AgentLiving* p = GW::Agents::GetPlayerAsAgentLiving();
     if (!p || p->GetIsDead()) {
         if (show_error_on_failure)
-            Log::Error(u8"没有可加载的物品 包ID %d 物品栏ID： %d", bag_idx,
+            Log::Error("Failed to equip item in bag %d slot %d", bag_idx,
                 slot_idx);
         ongoing = false;
         item = nullptr;
@@ -619,18 +783,20 @@ void HotkeyEquipItem::Execute()
                                                               // before
                                                               // equipping
                                                               // items.
-        // Log::Info("cancel action");
+                                                              // Log::Info("cancel action");
         return;
     }
     if (p->GetIsIdle() || p->GetIsMoving()) {
         GW::Items::EquipItem(item);
         // Log::Info("equip %d", item->item_id);
-    } else {
+    }
+    else {
         GW::Agents::Move(p->pos); // Move to clear model state e.g. attacking,
                                   // aftercast
-        // Log::Info("not idle nor moving, %d",p->model_state);
+                                  // Log::Info("not idle nor moving, %d",p->model_state);
     }
 }
+
 
 bool HotkeyDropUseBuff::GetText(void *data, int idx, const char **out_text)
 {

@@ -24,9 +24,6 @@
     <Filter Include="Fonts">
       <UniqueIdentifier>{0e7421f5-e8c4-429a-9d71-b4e7149862ff}</UniqueIdentifier>
     </Filter>
-    <Filter Include="imgui\examples">
-      <UniqueIdentifier>{aa9ec044-3ef0-4e3c-b2c0-2ce42e0a819b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Utf8proc">
       <UniqueIdentifier>{4b7e1521-dd69-4323-8ac0-942bc69f5194}</UniqueIdentifier>
     </Filter>
@@ -220,13 +217,14 @@
     <ClCompile Include="Dependencies\fonts\source_sans_pro_regular.cpp">
       <Filter>Fonts</Filter>
     </ClCompile>
-    <ClCompile Include="Dependencies\imgui\examples\imgui_impl_win32.cpp">
-      <Filter>imgui\examples</Filter>
-    </ClCompile>
     <ClCompile Include="Dependencies\utf8proc\utf8proc.c">
       <Filter>Utf8proc</Filter>
     </ClCompile>
     <ClCompile Include="GWToolboxdll\imgui_impl_dx9.cpp" />
+    <ClCompile Include="GWToolboxdll\imgui_impl_win32.cpp" />
+    <ClCompile Include="Dependencies\imgui\imgui_tables.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GWToolboxdll\Windows\BuildsWindow.h">
@@ -428,9 +426,6 @@
     <ClInclude Include="Dependencies\fonts\source_sans_pro_regular.h">
       <Filter>Fonts</Filter>
     </ClInclude>
-    <ClInclude Include="Dependencies\imgui\examples\imgui_impl_win32.h">
-      <Filter>imgui\examples</Filter>
-    </ClInclude>
     <ClInclude Include="Dependencies\utf8proc\utf8proc.h">
       <Filter>Utf8proc</Filter>
     </ClInclude>
@@ -439,6 +434,7 @@
     <ClInclude Include="Dependencies\SimpleIni\SimpleIni.h">
       <Filter>Simpleini</Filter>
     </ClInclude>
+    <ClInclude Include="GWToolboxdll\imgui_impl_win32.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\materials\Powerstone_of_Courage.png" />

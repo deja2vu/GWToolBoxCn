@@ -1,4 +1,24 @@
 
+*.ipch
 .vs/GWToolBoxCn/v16/.suo
 .vs/GWToolBoxCn/v16/Browse.VC.db
 .vs/GWToolBoxCn/v16/Solution.VC.db
+Dependencies/DirectX/Include/audiodefs.h
+Dependencies/DirectX/Include/audiodefs.h
+Dependencies/DirectX/Include/comdecl.h
+*.h
+Dependencies/DirectX/Include/audiodefs.h
+Dependencies/DirectX/Include/comdecl.h
+Dependencies/DirectX/Include/D2D1.h
+Dependencies/DirectX/Include/D2D1Helper.h
+Dependencies/DirectX/Include/D2DBaseTypes.h
+Dependencies/DirectX/Include/D2Derr.h
+Dependencies/DirectX/Include/D3D10.h
+Dependencies/DirectX/Include/D3D10_1.h
+Dependencies/DirectX/Include/D3D10_1shader.h
+Dependencies/DirectX/Include/D3D10effect.h
+Dependencies/DirectX/Include/d3d10misc.h
+Dependencies/DirectX/Include/d3d10sdklayers.h
+Dependencies/DirectX/Include/D3D10shader.h
+Dependencies/DirectX/Include/D3D11.h
+Dependencies/DirectX/Include/audiodefs.h

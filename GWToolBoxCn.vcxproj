@@ -21,10 +21,10 @@
   <ItemGroup>
     <ClCompile Include="Dependencies\fonts\fontawesome5.cpp" />
     <ClCompile Include="Dependencies\fonts\source_sans_pro_regular.cpp" />
-    <ClCompile Include="Dependencies\imgui\examples\imgui_impl_win32.cpp" />
     <ClCompile Include="Dependencies\imgui\imgui.cpp" />
     <ClCompile Include="Dependencies\imgui\imgui_demo.cpp" />
     <ClCompile Include="Dependencies\imgui\imgui_draw.cpp" />
+    <ClCompile Include="Dependencies\imgui\imgui_tables.cpp" />
     <ClCompile Include="Dependencies\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Dependencies\utf8proc\utf8proc.c" />
     <ClCompile Include="GWToolboxdll\base64.cpp" />
@@ -34,6 +34,7 @@
     <ClCompile Include="GWToolboxdll\GWToolbox.cpp" />
     <ClCompile Include="GWToolboxdll\ImGuiAddons.cpp" />
     <ClCompile Include="GWToolboxdll\imgui_impl_dx9.cpp" />
+    <ClCompile Include="GWToolboxdll\imgui_impl_win32.cpp" />
     <ClCompile Include="GWToolboxdll\IRC.cc" />
     <ClCompile Include="GWToolboxdll\Logger.cpp" />
     <ClCompile Include="GWToolboxdll\main.cpp" />
@@ -99,7 +100,6 @@
   <ItemGroup>
     <ClInclude Include="Dependencies\fonts\fontawesome5.h" />
     <ClInclude Include="Dependencies\fonts\source_sans_pro_regular.h" />
-    <ClInclude Include="Dependencies\imgui\examples\imgui_impl_win32.h" />
     <ClInclude Include="Dependencies\imgui\imgui.h" />
     <ClInclude Include="Dependencies\imgui\imgui_internal.h" />
     <ClInclude Include="Dependencies\imgui\imstb_rectpack.h" />
@@ -118,6 +118,7 @@
     <ClInclude Include="GWToolboxdll\imconfig.h" />
     <ClInclude Include="GWToolboxdll\ImGuiAddons.h" />
     <ClInclude Include="GWToolboxdll\imgui_impl_dx9.h" />
+    <ClInclude Include="GWToolboxdll\imgui_impl_win32.h" />
     <ClInclude Include="GWToolboxdll\IRC.h" />
     <ClInclude Include="GWToolboxdll\Keys.h" />
     <ClInclude Include="GWToolboxdll\Logger.h" />
@@ -347,7 +348,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>false</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_USRDLL;NOMINMAX;_USE_MATH_DEFINES;WIN32_LEAN_AND_MEAN;IMGUI_USER_CONFIG="D:\Ranger\Documents\Visual Studio 2015\Source\Repos\GWTBInstaller\GWToolBoxCn\GWToolboxdll\imconfig.h";UTF8PROC_STATIC;GWTOOLBOXDLL_VERSION="4.2.0.7";CMAKE_INTDIR="Release";GWToolboxdll_EXPORTS;_WINDLL;_MBCS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_USRDLL;NOMINMAX;_USE_MATH_DEFINES;WIN32_LEAN_AND_MEAN;IMGUI_USER_CONFIG="D:\Ranger\Documents\Visual Studio 2015\Source\Repos\GWTBInstaller\GWToolBoxCn\GWToolboxdll\imconfig.h";UTF8PROC_STATIC;GWTOOLBOXDLL_VERSION="4.2.1.3";CMAKE_INTDIR="Release";GWToolboxdll_EXPORTS;_WINDLL;_MBCS</PreprocessorDefinitions>
       <SDLCheck>
       </SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\DirectX\Include\;$(ProjectDir)GWToolboxdll\;$(ProjectDir)Dependencies\utf8proc\;$(ProjectDir)Dependencies\SimpleIni\;$(ProjectDir);$(ProjectDir)Dependencies\imgui\;$(ProjectDir)Dependencies\;$(ProjectDir)Dependencies\GWCA\Include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -357,6 +358,7 @@
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MinimalRebuild>true</MinimalRebuild>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
