@@ -122,7 +122,7 @@ namespace {
     std::unordered_map<HookEntry *, Chat::ChatEventCallback>    ChatEvent_callbacks;
     std::unordered_map<HookEntry *, Chat::LocalMessageCallback> LocalMessage_callbacks;
     std::unordered_map<HookEntry *, Chat::WhisperCallback>      Whisper_callbacks;
-    std::unordered_map<HookEntry*, Chat::PrintChatCallback>      PrintChat_callbacks;
+    std::unordered_map<HookEntry*, Chat::PrintChatCallback>     PrintChat_callbacks;
     std::unordered_map<HookEntry *, Chat::StartWhisperCallback> StartWhisper_callbacks;
 
     typedef void(__cdecl *ChatEvent_pt)(uint32_t event_id, uint32_t type, wchar_t *info, void *unk);
@@ -242,25 +242,33 @@ namespace {
         Chat::Channel channel, wchar_t *str, FILETIME timestamp, int reprint);
     PrintChat_pt RetPrintChat;
     PrintChat_pt PrintChat_Func;
+    void* PrintChat_Context = nullptr;
+    // Used for fetching PrintChat_Context in chat window
+    const wchar_t* PrintChat_Context_Sample_String = L"\x108\x107\x200B\x1";
     void __fastcall OnPrintChat(void *ctx, uint32_t edx,
         Chat::Channel channel, wchar_t *str, FILETIME timestamp, int reprint)
     {
         HookBase::EnterHook();
         GWCA_ASSERT(ChatBuffer_Addr && 0 <= channel && channel < Chat::Channel::CHANNEL_COUNT);
-
+        PrintChat_Context = ctx;
+        if (channel == Chat::Channel::CHANNEL_GWCA1 && wcscmp(str, PrintChat_Context_Sample_String) == 0) {
+            HookBase::LeaveHook();
+            return; // Spoof packet from GetChatWindowContext();
+        }
 		HookStatus status;
+        wchar_t** str_p = &str;
 		for (auto& it : PrintChat_callbacks) {
-			it.second(&status, channel, str, timestamp, reprint);
+			it.second(&status, channel, str_p, timestamp, reprint);
 			++status.altitude;
 		}
 		if (status.blocked) {
-			RetPrintChat(ctx, edx, channel, str, timestamp, reprint);
+			//RetPrintChat(ctx, edx, channel, str, timestamp, reprint);
 			HookBase::LeaveHook();
 			return;
 		}
 
         if (!ShowTimestamps) {
-            RetPrintChat(ctx, edx, channel, str, timestamp, reprint);
+            RetPrintChat(ctx, edx, channel, *str_p, timestamp, reprint);
             HookBase::LeaveHook();
             return;
         }
@@ -291,19 +299,27 @@ namespace {
         }
         if (ChannelThatParseColorTag[channel]) {
             if (localtime.wYear == 0) {
-                wsprintfW(buffer, L"\x108\x107<c=#%06x>[--:--] </c>\x01\x02%s", TimestampsColor, str);
+                wsprintfW(buffer, L"\x108\x107<c=#%06x>[--:--] </c>\x01\x02%s", TimestampsColor, *str_p);
             } else {
-                wsprintfW(buffer, L"\x108\x107<c=#%06x>%s </c>\x01\x02%s", (TimestampsColor & 0x00FFFFFF), t_buffer, str);
+                wsprintfW(buffer, L"\x108\x107<c=#%06x>%s </c>\x01\x02%s", (TimestampsColor & 0x00FFFFFF), t_buffer, *str_p);
             }
         } else {
             if (localtime.wYear == 0) {
-                wsprintfW(buffer, L"\x108\x107[--:--] \x01\x02%s", str);
+                wsprintfW(buffer, L"\x108\x107[--:--] \x01\x02%s", *str_p);
             } else {
-                wsprintfW(buffer, L"\x108\x107%s \x01\x02%s", t_buffer, str);
+                wsprintfW(buffer, L"\x108\x107%s \x01\x02%s", t_buffer, *str_p);
             }
         }
         RetPrintChat(ctx, edx, channel, buffer, timestamp, reprint);
         HookBase::LeaveHook();
+    }
+    // Function to get chat window context. This is massively dodgy and the context should be found via offsets, but we don't have the functions mapped yet.
+    void* GetChatWindowContext() {
+        // This is caught (and blocked) in OnPrintChat above.
+        if(!PrintChat_Context)
+            Chat::WriteChatEnc(Chat::Channel::CHANNEL_GWCA1, PrintChat_Context_Sample_String);
+        // @Cleanup: The context is reset on map change; this is not a massive issue because the game re-calls OnPrintChat before we have a chance
+        return PrintChat_Context;
     }
 
     void Init() {
@@ -374,10 +390,8 @@ namespace {
     }
 
     void Exit() {
-    #if 0
         if(StartWhisper_Func)
             HookBase::RemoveHook(StartWhisper_Func);
-    #endif
         if (ChatEvent_Func)
             HookBase::RemoveHook(ChatEvent_Func);
         if (GetSenderColor_Func)
@@ -593,7 +607,7 @@ namespace GW {
         for (size_t i = 0; i < len; i++)
             buffer[i + 1] = static_cast<wchar_t>(msg[i]);
 
-        SendChat_Func(buffer, 0);
+        OnSendChat(buffer, 0);
     }
 
     void Chat::SendChat(char channel, const char *msg) {
@@ -608,7 +622,7 @@ namespace GW {
         for (size_t i = 0; i < len; i++)
             buffer[i + 1] = static_cast<wchar_t>(msg[i]);
 
-        SendChat_Func(buffer, 0);
+        OnSendChat(buffer, 0);
     }
 
     void Chat::SendChat(const wchar_t *from, const wchar_t *msg) {
@@ -617,7 +631,7 @@ namespace GW {
 
         if (swprintf(buffer, 140, L"\"%s,%s", from, msg) < 140) {
             buffer[139] = 0;
-            SendChat_Func(buffer, 0);
+            OnSendChat(buffer, 0);
         }
     }
 
@@ -627,7 +641,7 @@ namespace GW {
 
         if (swprintf(buffer, 140, L"\"%S,%S", from, msg) < 140) {
             buffer[139] = 0;
-            SendChat_Func(buffer, 0);
+            OnSendChat(buffer, 0);
         }
     }
 
@@ -652,13 +666,9 @@ namespace GW {
     }
     */
 
-    struct UIChatMessage {
-        uint32_t channel;
-        wchar_t *message;
-        uint32_t channel2;
-    };
 
-    void Chat::WriteChat(Channel channel, const wchar_t *msg, const wchar_t *sender) {
+
+    void Chat::WriteChat(Channel channel, const wchar_t *msg, const wchar_t *sender,bool transient) {
 
         size_t len = wcslen(msg);
         wchar_t *buffer = new wchar_t[len + 4];
@@ -669,12 +679,12 @@ namespace GW {
             buffer[written++] = msg[i];
         buffer[written++] = 1;
         buffer[written++] = 0;
-        WriteChatEnc(channel, buffer, sender);
+        WriteChatEnc(channel, buffer, sender, transient);
         delete[] buffer;
     }
-    void Chat::WriteChatEnc(Channel channel, const wchar_t* msg, const wchar_t* sender) {
-
-        UIChatMessage param;
+    void Chat::WriteChatEnc(Channel channel, const wchar_t* msg, const wchar_t* sender, bool transient) {
+        static wchar_t* new_message;
+        UI::UIChatMessage param;
         param.channel = channel;
         param.channel2 = channel;
         param.message = (wchar_t*)msg;
@@ -682,7 +692,8 @@ namespace GW {
             size_t msg_len = wcslen(msg);
             size_t sender_len = wcslen(sender);
             size_t written = 0;
-            param.message = new wchar_t[msg_len + sender_len + 9];
+            new_message = new wchar_t[msg_len + sender_len + 9];
+            param.message = new_message;
             param.message[written++] = 0x76b;
             param.message[written++] = 0x10a;
             param.message[written++] = 0x108;
@@ -697,31 +708,21 @@ namespace GW {
             param.message[written++] = 0x1;
             param.message[written++] = 0;
         }
-        UI::SendUIMessage(UI::kWriteToChatLog, &param);
+        if (transient) {
+            // NB: Due to the noddy way we try to get chat window context, it may not be available even when we try to get it. Silent fail.
+            if (GetChatWindowContext()) {
+                SYSTEMTIME now;
+                GetSystemTime(&now);
+                FILETIME now_ft;
+                GWCA_ASSERT(SystemTimeToFileTime(&now, &now_ft));
+                OnPrintChat(GetChatWindowContext(), 0, channel, param.message, now_ft, 0);
+            }
+        }
+        else {
+            UI::SendUIMessage(UI::kWriteToChatLog, &param);
+        }
         if (sender) 
-            delete[] param.message;
-    }
-
-    void Chat::WriteChat(Channel channel, const char *msg) {
-
-        size_t len = strlen(msg);
-        wchar_t *buffer = new wchar_t[len + 4];
-
-        UIChatMessage param;
-        param.channel = channel;
-        param.channel2 = channel;
-        param.message = buffer;
-
-        buffer[0] = 0x108;
-        buffer[1] = 0x107;
-        for (size_t i = 0; i < len; i++)
-            buffer[i + 2] = static_cast<wchar_t>(msg[i]);
-
-        buffer[len + 2] = 1;
-        buffer[len + 3] = 0;
-
-        UI::SendUIMessage(UI::kWriteToChatLog, &param);
-        delete[] buffer;
+            delete[] new_message;
     }
 
     void Chat::CreateCommand(std::wstring cmd, CmdCB callback) {

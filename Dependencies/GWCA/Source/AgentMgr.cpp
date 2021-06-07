@@ -88,9 +88,10 @@ namespace {
             IsAutoRunningPtr = *reinterpret_cast<uintptr_t*>((uintptr_t)MovementChange_Func + 0x40) - 0x4;
         GWCA_INFO("[SCAN] IsAutoRunningPtr = %p\n", IsAutoRunningPtr);
 
+        //ChangeTarget_Func = (ChangeTarget_pt)Scanner::Find(
+        //    "\x53\x8B\x5D\x0C\x56\x8B\x75\x08\x85", "xxxxxxxxx", -0x10);
         ChangeTarget_Func = (ChangeTarget_pt)Scanner::Find(
-           // "\x53\x8B\x5D\x0C\x56\x8B\x75\x08\x85", "xxxxxxxxx", -0x10);
-        "\x3B\xDF\x0F\x95", "xxxx", -0x0089);
+            "\x3B\xDF\x0F\x95", "xxxx", -0x0089);
         GWCA_INFO("[SCAN] ChangeTargetFunction = %p\n", ChangeTarget_Func);
 
         if (ChangeTarget_Func) {
@@ -175,8 +176,10 @@ namespace GW {
     }
 
     void Agents::ChangeTarget(AgentID agent_id) {
+        if (!Verify(ChangeTarget_Func))
+            return;
         AgentArray agents = GetAgentArray();
-        if (Verify(ChangeTarget_Func) && agents.valid() && agents[agent_id] != nullptr)
+        if (agent_id == 0 || (agents.valid() && agents[agent_id] != nullptr))
             ChangeTarget_Func(agent_id, 0);
     }
 

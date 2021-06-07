@@ -664,9 +664,10 @@ bool HotkeyEquipItem::HasIndex(const uint32_t idx)
 void HotkeyEquipItem::AddIndex(uint32_t& idx)
 {
     if (idx != 0) {
-        if (HasIndex(idx)) return;
-        nameIndex.push_back(idx);
-        return;
+        if (!HasIndex(idx)) {
+            nameIndex.push_back(idx);
+            return;
+        }
     }
     if (nameIndex.size() == 0) {
         nameIndex.push_back(1);

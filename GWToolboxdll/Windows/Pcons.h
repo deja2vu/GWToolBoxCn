@@ -5,7 +5,7 @@
 #include <GWCA/Managers/AgentMgr.h>
 #include <GWCA/Managers/MapMgr.h>
 
-#include <GWCA/Packets/CtoSHeaders.h>
+//#include <GWCA/Packets/CtoSHeaders.h>
 
 #include <Color.h>
 #include <Timer.h>

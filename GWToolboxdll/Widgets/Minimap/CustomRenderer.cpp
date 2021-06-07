@@ -20,10 +20,8 @@
 
 #define IniFilename L"Markers.ini"
 
-Color CustomRenderer::color(0xFF00FFFF);
-
 using namespace std::string_literals;
-
+Color CustomRenderer::color = { 0xFF00FFFF };
 void CustomRenderer::LoadSettings(CSimpleIni* ini, const char* section)
 {
     color = Colors::Load(ini, section, "color_custom_markers", 0xFFFFFFFF);

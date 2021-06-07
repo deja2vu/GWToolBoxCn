@@ -226,7 +226,6 @@ static void PrintField(FieldType field, uint32_t count, uint8_t **bytes, uint32_
     case FieldType::String16: {
         PrintIndent(indent);
         wchar_t *str = reinterpret_cast<wchar_t*>(*bytes);
-        printf("x:%d\n", *((uint16_t*)bytes));
         size_t length = wcsnlen(str, count);
         wprintf(L"String(%lu) \"%.*s\"\n", length, static_cast<int>(length), str);
         // PrintString(length, str);
@@ -334,8 +333,7 @@ static void PacketHandler(GW::HookStatus *status, GW::Packet::StoC::PacketBase *
         return;
     if (ignored_packets[packet->header])
         return;
-    if ((packet->header == 30) || (packet->header == 46)) return;
-    //if (packet->header != 330) return;
+
     StoCHandler handler = game_server_handler[packet->header];
     uint8_t *packet_raw = reinterpret_cast<uint8_t*>(packet);
 
@@ -345,7 +343,6 @@ static void PacketHandler(GW::HookStatus *status, GW::Packet::StoC::PacketBase *
     assert(packet->header == header);
 
     printf("packet(%lu) {\n", packet->header);
-    
     PrintNestedField(handler.fields + 1, handler.field_count - 1, 1, bytes, 4);
     printf("}\n");
 

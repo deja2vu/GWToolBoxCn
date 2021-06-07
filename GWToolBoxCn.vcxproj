@@ -348,7 +348,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>false</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_USRDLL;NOMINMAX;_USE_MATH_DEFINES;WIN32_LEAN_AND_MEAN;IMGUI_USER_CONFIG="D:\Ranger\Documents\Visual Studio 2015\Source\Repos\GWTBInstaller\GWToolBoxCn\GWToolboxdll\imconfig.h";UTF8PROC_STATIC;GWTOOLBOXDLL_VERSION="4.2.1.3";CMAKE_INTDIR="Release";GWToolboxdll_EXPORTS;_WINDLL;_MBCS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_USRDLL;NOMINMAX;_USE_MATH_DEFINES;WIN32_LEAN_AND_MEAN;IMGUI_USER_CONFIG="D:\Ranger\Documents\Visual Studio 2015\Source\Repos\GWTBInstaller\GWToolBoxCn\GWToolboxdll\imconfig.h";UTF8PROC_STATIC;GWTOOLBOXDLL_VERSION="4.2.1.4";CMAKE_INTDIR="Release";GWToolboxdll_EXPORTS;_WINDLL;_MBCS</PreprocessorDefinitions>
       <SDLCheck>
       </SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\DirectX\Include\;$(ProjectDir)GWToolboxdll\;$(ProjectDir)Dependencies\utf8proc\;$(ProjectDir)Dependencies\SimpleIni\;$(ProjectDir);$(ProjectDir)Dependencies\imgui\;$(ProjectDir)Dependencies\;$(ProjectDir)Dependencies\GWCA\Include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

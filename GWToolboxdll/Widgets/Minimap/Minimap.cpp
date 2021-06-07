@@ -87,13 +87,7 @@ namespace {
             return FlaggingState::FlagState_None;
         return *MouseClickCaptureDataPtr->sub1->sub2->sub3->sub4->sub5->flagging_hero;
     }
-    typedef void(__fastcall* StopCaptureMouseClick_pt)();
-    StopCaptureMouseClick_pt StopCaptureMouseClick_Func;
-
-    // This needs to signal to the game that it needs to capture the next mouse click as a flag, but we don't know how yet :(
-    typedef void(__fastcall* StartCaptureMouseClick_pt)(FlaggingState* arg1, void* arg2, uint32_t arg3, void* arg4, uint32_t arg5, void* arg6, void* arg7, void* arg8, void* arg9);
-    StartCaptureMouseClick_pt StartCaptureMouseClick_Func;
-
+    static bool compass_fix_pending = false;
     bool SetFlaggingState(FlaggingState set_state) {
         if (GW::Map::GetInstanceType() != GW::Constants::InstanceType::Explorable)
             return false;
@@ -102,10 +96,7 @@ namespace {
         if (GetFlaggingState() == set_state)
             return true;
         if (set_state == FlaggingState::FlagState_None) {
-            if (!StopCaptureMouseClick_Func)
-                return false;
-            StopCaptureMouseClick_Func();
-            return true;
+            set_state = GetFlaggingState();
         }
         GW::UI::ControlAction key = GW::UI::ControlAction_None;
         switch (set_state) {
@@ -160,16 +151,13 @@ void Minimap::Initialize()
 {
     ToolboxWidget::Initialize();
 
-    uintptr_t address = GW::Scanner::Find("\x56\x8B\x75\x08\xD3\xE2\x23\x56\x10\xF7\xDA\x1B\xD2\x83\xE0\x01", "xxxxxxxxxxxxxxxx",-0x2D);
+    uintptr_t address = GW::Scanner::Find("\x00\x74\x16\x6A\x27\x68\x80\x00\x00\x00\x6A\x00\x68", "xxxxxxxxxxxxx",-0x51);
     if (address) {
-        StopCaptureMouseClick_Func = (StopCaptureMouseClick_pt)address;
-        address = address + 0x5;
         address = *(uintptr_t*)address;
         MouseClickCaptureDataPtr = (MouseClickCaptureData*)address;
         GameCursorState = (uint32_t*)(address + 0x4);
         CaptureMouseClickTypePtr = (CaptureMouseClickType*)(address - 0x10);
     }
-    Log::Log("[SCAN] StopCaptureMouseClick_Func = %p\n", StopCaptureMouseClick_Func);
     Log::Log("[SCAN] CaptureMouseClickTypePtr = %p\n", CaptureMouseClickTypePtr);
     Log::Log("[SCAN] MouseClickCaptureDataPtr = %p\n", MouseClickCaptureDataPtr);
 
@@ -218,10 +206,17 @@ void Minimap::Initialize()
     });
     GW::StoC::RegisterPacketCallback<GW::Packet::StoC::SkillActivate>(&SkillActivate_Entry, &SkillActivateCallback);
     GW::StoC::RegisterPacketCallback<GW::Packet::StoC::InstanceLoadInfo>(&InstanceLoadInfo_Entry, [this](GW::HookStatus *, GW::Packet::StoC::InstanceLoadInfo *packet) -> void { is_observing = packet->is_observer != 0; });
-    GW::StoC::RegisterPacketCallback<GW::Packet::StoC::InstanceLoadFile>(&InstanceLoadFile_Entry, [this](GW::HookStatus *, GW::Packet::StoC::InstanceLoadFile *packet) -> void {
+    GW::StoC::RegisterPacketCallback<GW::Packet::StoC::InstanceLoadFile>(&InstanceLoadFile_Entry, [this](GW::HookStatus*, GW::Packet::StoC::InstanceLoadFile* packet) -> void {
         UNREFERENCED_PARAMETER(packet);
         pmap_renderer.Invalidate();
         loading = false;
+        // Compass fix to allow hero flagging controls
+        GW::UI::WindowPosition* compass_info = GW::UI::GetWindowPosition(GW::UI::WindowID_Compass);
+        if (compass_info && !compass_info->visible()) {
+            // Note: Wait for a frame to pass before toggling off again to allow the game to initialise the window.
+            compass_fix_pending = true;
+            GW::UI::SetWindowVisible(GW::UI::WindowID_Compass, true);
+        }
     });
 
     GW::StoC::RegisterPacketCallback<GW::Packet::StoC::GameSrvTransfer>(&GameSrvTransfer_Entry, [this](GW::HookStatus *, GW::Packet::StoC::GameSrvTransfer *pak) -> void {
@@ -229,10 +224,11 @@ void Minimap::Initialize()
         loading = true;
         agent_renderer.auto_target_id = 0;
     });
-    GW::UI::RegisterUIMessageCallback(&UIMsg_Entry, [this](GW::HookStatus *, uint32_t msgid, void *lParam, void *) -> void {
-        if (msgid != GW::UI::kAutoTargetAgent || !lParam)
+    GW::UI::RegisterUIMessageCallback(&UIMsg_Entry, [this](GW::HookStatus*, uint32_t msgid, void* wParam , void* ) -> void {
+        if (msgid != GW::UI::kChangeTarget)
             return;
-        agent_renderer.auto_target_id = *static_cast<uint32_t *>(lParam);
+        GW::UI::ChangeTargetUIMsg* msg = (GW::UI::ChangeTargetUIMsg*)wParam;
+        agent_renderer.auto_target_id = GW::Agents::GetTargetId() ? 0 : msg->auto_target_id;
     });
 
     last_moved = TIMER_INIT();
@@ -443,6 +439,7 @@ void Minimap::LoadSettings(CSimpleIni *ini)
 {
     ToolboxWidget::LoadSettings(ini);
     Resources::Instance().EnsureFileExists(Resources::GetPath(L"Markers.ini"),
+        //L"https://raw.githubusercontent.com/HasKha/GWToolboxpp/master/resources/Markers.ini",
         [](bool success) {
             UNREFERENCED_PARAMETER(success);
             Minimap::Instance().custom_renderer.LoadMarkers();
@@ -504,6 +501,7 @@ size_t Minimap::GetPlayerHeroes(const GW::PartyInfo *party, std::vector<GW::Agen
     const uint32_t player_id = GW::PlayerMgr::GetPlayerNumber();
     if (!player_id)
         return 0;
+    Log::Info("123");
     const GW::HeroPartyMemberArray& heroes = party->heroes;
     
     bool player_is_leader = GetPlayerIsLeader();
@@ -513,7 +511,7 @@ size_t Minimap::GetPlayerHeroes(const GW::PartyInfo *party, std::vector<GW::Agen
             party_players_by_id.emplace(pplayer.login_number, &pplayer);
         }
     }
-    
+    Log::Info("1222223");
     _player_heroes.reserve(heroes.size());
     for (const GW::HeroPartyMember &hero : heroes) {
         if (hero.owner_player_id == player_id)
@@ -526,6 +524,7 @@ size_t Minimap::GetPlayerHeroes(const GW::PartyInfo *party, std::vector<GW::Agen
                 *has_flags = true;
         }
     }
+    Log::Info("122222222223");
     if (player_is_leader && has_flags && party->henchmen.size())
         *has_flags = true;
     else if (_player_heroes.size() && has_flags)
@@ -610,11 +609,9 @@ void Minimap::Draw(IDirect3DDevice9 *)
     ImGui::PopStyleColor();
 
     if (hero_flag_controls_show && GW::Map::GetInstanceType() == GW::Constants::InstanceType::Explorable) {
-
         const GW::PartyInfo* playerparty = GetPlayerParty();
         bool has_flags = false;
         GetPlayerHeroes(playerparty, player_heroes, &has_flags);
-
         if (has_flags) {
             if (hero_flag_window_attach) {
                 ImGui::SetNextWindowPos(ImVec2(static_cast<float>(location.x), static_cast<float>(location.y + size.y)));
@@ -669,6 +666,12 @@ void Minimap::Render(IDirect3DDevice9* device) {
     auto& instance = Instance();
     if (!instance.IsActive())
         return;
+    if (compass_fix_pending) {
+        // Note: Wait for a frame to pass before toggling off again to allow the game to initialise the window.
+        GW::UI::SetWindowVisible(GW::UI::WindowID_Compass, false);
+        compass_fix_pending = false;
+    }
+
     GW::Agent* me = GW::Agents::GetPlayer();
     if (me == nullptr) return;
 

@@ -140,7 +140,7 @@ private:
     } linecircle;
 
     //inline static Color color{0xFF00FFFF};
-	static Color color;
+    static Color color;
     D3DVertex* vertices = nullptr;
     unsigned int vertices_count = 0;
     unsigned int vertices_max = 0;
@@ -153,4 +153,3 @@ private:
 
     CSimpleIni* inifile = nullptr;
 };
-

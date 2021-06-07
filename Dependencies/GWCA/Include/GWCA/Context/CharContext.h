@@ -2,8 +2,18 @@
 
 #include <GWCA/GameContainers/Array.h>
 
+
 namespace GW {
     struct ObserverMatch;
+
+    struct ProgressBar {
+        int     pips;
+        uint8_t color[4];      // RGBA
+        uint8_t background[4]; // RGBA
+        int     unk[7];
+        float   progress;      // 0 ... 1
+        // possibly more
+    };
 
     struct CharContext { // total: 0x42C
         /* +h0000 */ Array<void *> h0000;
@@ -30,12 +40,12 @@ namespace GW {
         /* +h022C */ uint32_t current_map_id;
         /* +h0230 */ uint8_t h0230[8];
         /* +h0238 */ Array<ObserverMatch *> observer_matchs;
-        /* +h0248 */ uint8_t h0248[0x48];
-        /* +h0290 */ uint32_t player_number;
-        /* +h0294 */ uint8_t h0294[0xA4];
-        /* +h0338 */ uint32_t *progress_bar;
-        /* +h033C */ uint8_t h033C[0x6C];
-        /* +h03A8 */ wchar_t player_email[0x40];
+        /* +h0248 */ uint8_t h0248[0x5C];
+        /* +h02A4 */ uint32_t player_number;
+        /* +h02A8 */ uint8_t h02A8[0xA0];
+        /* +h0348 */ ProgressBar *progress_bar; // seems to never be nullptr
+        /* +h034C */ uint8_t h034C[0x6C];
+        /* +h03B8 */ wchar_t player_email[0x40];
     };
-    static_assert(sizeof(CharContext) == 0x428, "struct CharContext has incorrect size");
+    static_assert(sizeof(CharContext) == 0x438, "struct CharContext has incorrect size");
 }

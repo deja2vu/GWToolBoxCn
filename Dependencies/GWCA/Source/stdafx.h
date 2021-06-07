@@ -35,7 +35,6 @@
 
 #include <math.h>
 #include <stdio.h>
- 
 #include <stdint.h>
 #include <string.h>
 
@@ -47,7 +46,6 @@
 #include <algorithm>
 #include <functional>
 #include <unordered_map>
-
 
 #ifndef NOMINMAX
 # define NOMINMAX

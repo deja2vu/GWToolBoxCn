@@ -1,7 +1,7 @@
 #pragma once
 
 #include <GWCA/Utilities/Debug.h>
-#include <stdint.h>
+
 namespace GW {
 
     // class Array

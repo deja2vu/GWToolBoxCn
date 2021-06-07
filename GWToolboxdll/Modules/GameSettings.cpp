@@ -22,7 +22,7 @@
 #include <GWCA/Managers/GuildMgr.h>
 #include <GWCA/Managers/StoCMgr.h>
 #include <GWCA/Managers/CtoSMgr.h>
-#include <GWCA/Packets/CtoSHeaders.h>
+//#include <GWCA/Packets/CtoSHeaders.h>
 
 #include <GWCA/Managers/PartyMgr.h>
 #include <GWCA/Managers/CameraMgr.h>
@@ -1589,7 +1589,7 @@ void GameSettings::FriendStatusCallback(
     case GW::FriendStatus::FriendStatus_Offline:
         if (game_setting.notify_when_friends_offline) {
             snprintf(buffer, sizeof(buffer), "%ls (%ls) has just logged out.", charname, alias);
-            GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, buffer);
+            GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, (const wchar_t*)buffer);
         }
         return;
     case GW::FriendStatus::FriendStatus_Away:
@@ -1599,7 +1599,7 @@ void GameSettings::FriendStatusCallback(
             return;
         if (game_setting.notify_when_friends_online) {
             snprintf(buffer, sizeof(buffer), "<a=1>%ls</a> (%ls) has just logged in.</c>", charname, alias);
-            GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, buffer);
+            GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, (const wchar_t*)buffer);
         }
         return;
     }

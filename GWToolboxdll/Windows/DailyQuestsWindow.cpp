@@ -1494,8 +1494,8 @@ void DailyQuests::CmdWeeklyBonus(const wchar_t* message, int argc, LPWSTR* argv)
         snprintf(buf, buf_size, "Weekly Bonus PvE, %s: <a=1>%s%s</a>", DateString(&now), "https://wiki.guildwars.com/wiki/", pve_weekly_bonus_cycles[GetWeeklyBonusPvE(&now)]);
         snprintf(buf2, buf_size, "Weekly Bonus PvP, %s: <a=1>%s%s</a>", DateString(&now), "https://wiki.guildwars.com/wiki/", pvp_weekly_bonus_cycles[GetWeeklyBonusPvP(&now)]);
     }
-    GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, buf);
-    GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, buf2);
+    GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, (const wchar_t *)buf);
+    GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, (const wchar_t*)buf2);
 }
 void DailyQuests::CmdZaishenBounty(const wchar_t *message, int argc, LPWSTR *argv) {
     UNREFERENCED_PARAMETER(message);
@@ -1509,7 +1509,7 @@ void DailyQuests::CmdZaishenBounty(const wchar_t *message, int argc, LPWSTR *arg
         snprintf(buf, buf_size, "Zaishen Bounty: <a=1>%s%s</a>", "https://wiki.guildwars.com/wiki/", zaishen_bounty_cycles[GetZaishenBounty(&now)]);
     else
         snprintf(buf, buf_size, "Zaishen Bounty, %s: <a=1>%s%s</a>", DateString(&now), "https://wiki.guildwars.com/wiki/", zaishen_bounty_cycles[GetZaishenBounty(&now)]);
-    GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL,buf);
+    GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, (const wchar_t*)buf);
 }
 void DailyQuests::CmdZaishenMission(const wchar_t *message, int argc, LPWSTR *argv) {
     UNREFERENCED_PARAMETER(message);
@@ -1523,7 +1523,7 @@ void DailyQuests::CmdZaishenMission(const wchar_t *message, int argc, LPWSTR *ar
         snprintf(buf, buf_size, "Zaishen Mission: <a=1>%s%s</a>", "https://wiki.guildwars.com/wiki/", zaishen_mission_cycles[GetZaishenMission(&now)]);
     else
         snprintf(buf, buf_size, "Zaishen Mission, %s: <a=1>%s%s</a>", DateString(&now), "https://wiki.guildwars.com/wiki/", zaishen_mission_cycles[GetZaishenMission(&now)]);
-    GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, buf);
+    GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, (const wchar_t*)buf);
 }
 void DailyQuests::CmdZaishenVanquish(const wchar_t *message, int argc, LPWSTR *argv) {
     UNREFERENCED_PARAMETER(message);
@@ -1537,7 +1537,7 @@ void DailyQuests::CmdZaishenVanquish(const wchar_t *message, int argc, LPWSTR *a
         snprintf(buf, buf_size, "Zaishen Vanquish: <a=1>%s%s</a>", "https://wiki.guildwars.com/wiki/", zaishen_vanquish_cycles[GetZaishenVanquish(&now)]);
     else
         snprintf(buf, buf_size, "Zaishen Vanquish, %s: <a=1>%s%s</a>", DateString(&now), "https://wiki.guildwars.com/wiki/", zaishen_vanquish_cycles[GetZaishenVanquish(&now)]);
-    GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, buf);
+    GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, (const wchar_t*)buf);
 }
 void DailyQuests::CmdZaishenCombat(const wchar_t *message, int argc, LPWSTR *argv) {
     UNREFERENCED_PARAMETER(message);
@@ -1551,7 +1551,7 @@ void DailyQuests::CmdZaishenCombat(const wchar_t *message, int argc, LPWSTR *arg
         snprintf(buf, buf_size, "Zaishen Combat: <a=1>%s%s</a>", "https://wiki.guildwars.com/wiki/", zaishen_combat_cycles[GetZaishenCombat(&now)]);
     else
         snprintf(buf, buf_size, "Zaishen Combat, %s: <a=1>%s%s</a>", DateString(&now), "https://wiki.guildwars.com/wiki/", zaishen_combat_cycles[GetZaishenCombat(&now)]);
-    GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, buf);
+    GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, (const wchar_t*)buf);
 }
 void DailyQuests::CmdWantedByShiningBlade(const wchar_t *message, int argc, LPWSTR *argv) {
     UNREFERENCED_PARAMETER(message);
@@ -1565,7 +1565,7 @@ void DailyQuests::CmdWantedByShiningBlade(const wchar_t *message, int argc, LPWS
         snprintf(buf, buf_size, "Wanted: <a=1>%s%s</a>", "https://wiki.guildwars.com/wiki/", wanted_by_shining_blade_cycles[GetWantedByShiningBlade(&now)]);
     else
         snprintf(buf, buf_size, "Wanted, %s: <a=1>%s%s</a>", DateString(&now), "https://wiki.guildwars.com/wiki/", wanted_by_shining_blade_cycles[GetWantedByShiningBlade(&now)]);
-    GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, buf);
+    GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, (const wchar_t*)buf);
 }
 void DailyQuests::CmdVanguard(const wchar_t *message, int argc, LPWSTR *argv) {
     UNREFERENCED_PARAMETER(message);
@@ -1579,7 +1579,7 @@ void DailyQuests::CmdVanguard(const wchar_t *message, int argc, LPWSTR *argv) {
         snprintf(buf, buf_size, "Vanguard Quest: <a=1>%s%s</a>", "https://wiki.guildwars.com/wiki/", GetVanguardQuest(&now));
     else
         snprintf(buf, buf_size, "Vanguard Quest, %s: <a=1>%s%s</a>", DateString(&now), "https://wiki.guildwars.com/wiki/", GetVanguardQuest(&now));
-    GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, buf);
+    GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, (const wchar_t*)((char*)buf));
 }
 void DailyQuests::CmdNicholas(const wchar_t *message, int argc, LPWSTR *argv) {
     UNREFERENCED_PARAMETER(message);
@@ -1600,5 +1600,5 @@ void DailyQuests::CmdNicholas(const wchar_t *message, int argc, LPWSTR *argv) {
         else
             snprintf(buf, buf_size, "Nicholas the Traveler, %s: %d %s in %s", DateString(&now), GetNicholasItemQuantity(&now), GetNicholasItemName(&now), GetNicholasLocation(&now));
     }
-    GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, buf);
+    GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, (const wchar_t*)((char*)buf));
 }

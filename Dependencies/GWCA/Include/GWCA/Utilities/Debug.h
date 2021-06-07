@@ -1,5 +1,5 @@
 #pragma once
-#include <stdarg.h>
+
 #define GWCA_ASSERT(expr) ((void)(!!(expr) || (GW::FatalAssert(#expr, __FILE__, (unsigned)__LINE__, __FUNCTION__), 0)))
 
 #define GWCA_TRACE(fmt, ...) GW::LogMessage(GW::LEVEL_TRACE, __FILE__, (unsigned)__LINE__, __FUNCTION__, fmt, __VA_ARGS__);
