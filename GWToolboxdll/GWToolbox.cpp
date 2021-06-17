@@ -161,6 +161,40 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam) 
     if (Message == WM_RBUTTONDBLCLK) right_mouse_down = true;
     if (Message == WM_RBUTTONUP) right_mouse_down = false;
 
+
+    if (Message == WM_GETMINMAXINFO) {
+            if (GameSettings::Instance().lockedSize) {
+                MINMAXINFO* minmax(reinterpret_cast<MINMAXINFO*>(lParam));
+                minmax->ptMinTrackSize.x = GameSettings::Instance().cRect->size.w;
+                minmax->ptMaxTrackSize.x = GameSettings::Instance().cRect->size.w;
+                minmax->ptMinTrackSize.y = GameSettings::Instance().cRect->size.h;
+                minmax->ptMaxTrackSize.y = GameSettings::Instance().cRect->size.h;
+                return false;
+            }
+        }
+    if (Message == WM_SYSCOMMAND) {
+      
+        int command = wParam & 0xfff0;
+        
+            
+        if (command == SC_MOVE) {
+            if (GameSettings::Instance().lockedPos) {
+                return false;
+            }
+        }
+       
+
+            
+        }
+        
+
+
+   
+
+    if (Message == WM_NCLBUTTONDBLCLK) {
+        if (GameSettings::Instance().lockedSize)  return false;
+    }
+
     GWToolbox::Instance().right_mouse_down = right_mouse_down;
 
     // === Send events to ImGui ===
@@ -291,7 +325,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam) 
         break;
 
     case WM_SIZE:
-        // ImGui doesn't need this, it reads the viewport size directly
+            // ImGui doesn't need WM_SZIE, it reads the viewport size directly
+        GameSettings::Instance().cRect->OnSize(wParam,lParam);
+            break;
+    case WM_SIZING:
+        GameSettings::Instance().cRect->OnResizing(lParam);
+        break;
+    case WM_MOVING:
+        GameSettings::Instance().cRect->OnMoving(lParam);
+        break;
+    case WM_WINDOWPOSCHANGING:
         break;
     default:
         // Custom messages registered via RegisterWindowMessage

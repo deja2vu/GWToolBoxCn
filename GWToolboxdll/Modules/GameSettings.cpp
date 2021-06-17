@@ -48,8 +48,21 @@
 
 
 #pragma warning(disable : 6011)
-
 namespace {
+    
+    static const char* postions[] = {
+        u8"任意",
+        u8"左上",
+        u8"左中",
+        u8"左下",
+        u8"右上",
+        u8"右中",
+        u8"右下",
+        u8"中上",
+        u8"居中",
+        u8"中下"
+    };
+
     void SendChatCallback(GW::HookStatus *, GW::Chat::Channel chan, wchar_t msg[120]) {
         if (!GameSettings::Instance().auto_url || !msg) return;
         size_t len = wcslen(msg);
@@ -177,6 +190,15 @@ namespace {
         {
             SetWindowTextW(hwnd, title.c_str());
         }
+    }
+
+    void SetWindowPostionSize(bool enabled) {
+        if (!enabled)
+            return;
+        HWND hwnd = GW::MemoryMgr::GetGWWindowHandle();
+        if (!hwnd) return;
+       // SetWindowPos();
+        Sleep(0);
     }
 
     GW::Player* GetPlayerByName(const wchar_t* _name) {
@@ -1047,6 +1069,18 @@ void GameSettings::LoadSettings(CSimpleIni* ini) {
 
     tome_patch.TogglePatch(show_unlearned_skill);
     gold_confirm_patch.TogglePatch(disable_gold_selling_confirmation);
+    /*
+    immediate_mode = ini->GetBoolValue(Name(), VAR_NAME(immediate_mode), immediate_mode);
+    movable = ini->GetBoolValue(Name(), VAR_NAME(movable), movable);
+    lockedSize = ini->GetBoolValue(Name(), VAR_NAME(lockedSize), lockedSize);
+    fixedWH = ini->GetBoolValue(Name(), VAR_NAME(fixedWH), fixedWH);
+    ClientWH = std::stof((ini->GetValue(Name(), VAR_NAME(fixedWH),"1.777778")));//16/9
+    gw_pos.x = ini->GetLongValue(Name(), VAR_NAME(gw_pos.x), gw_pos.x);
+    gw_pos.y = ini->GetLongValue(Name(), VAR_NAME(gw_pos.y), gw_pos.y);
+    gw_size.x = ini->GetLongValue(Name(), VAR_NAME(gw_size.x), gw_size.x);
+    gw_size.y = ini->GetLongValue(Name(), VAR_NAME(gw_size.y), gw_size.y);
+    */
+
 }
 
 void GameSettings::RegisterSettingsContent() {
@@ -1152,6 +1186,17 @@ void GameSettings::SaveSettings(CSimpleIni* ini) {
     ::SaveChannelColor(ini, Name(), "whispers", GW::Chat::Channel::CHANNEL_WHISPER);
     ::SaveChannelColor(ini, Name(), "emotes", GW::Chat::Channel::CHANNEL_EMOTE);
     ::SaveChannelColor(ini, Name(), "other", GW::Chat::Channel::CHANNEL_GLOBAL);
+ /*
+    ini->SetBoolValue(Name(), VAR_NAME(immediate_mode), immediate_mode);
+    ini->SetBoolValue(Name(), VAR_NAME(movable), movable);
+    ini->SetBoolValue(Name(), VAR_NAME(lockedSize), lockedSize);
+    ini->SetBoolValue(Name(), VAR_NAME(fixedWH), fixedWH);
+    ini->SetValue(Name(), VAR_NAME(ClientWH), std::to_string(ClientWH).c_str());
+    ini->SetLongValue(Name(), VAR_NAME(gw_pos.x), gw_pos.x);
+    ini->SetLongValue(Name(), VAR_NAME(gw_pos.y), gw_pos.y);
+    ini->SetLongValue(Name(), VAR_NAME(gw_size.x), gw_size.x);
+    ini->SetLongValue(Name(), VAR_NAME(gw_size.y), gw_size.y);
+    */
 }
 
 void GameSettings::DrawInventorySettings() {
@@ -1319,6 +1364,127 @@ void GameSettings::DrawSettingInternal() {
     ImGui::Checkbox("Disable camera smoothing", &disable_camera_smoothing);
     ImGui::Checkbox("Improve move to cast spell range", &improve_move_to_cast);
     ImGui::ShowHelp("This should make you stop to cast skills earlier by re-triggering the skill cast when in range.");
+
+    ImGui::Checkbox(u8"锁定客户端大小和位置", &lock_Size_Positon);
+    if (lock_Size_Positon) {
+        bool comb_checked = false;
+        ImGui::PushItemFlag(1 << 2, lockedPos);
+       comb_checked = ImGui::Combo(u8"请选择客户端停靠的位置", &postion_idx, postions, 10);
+       ImGui::PopItemFlag();
+        if (postion_idx == 0) {
+             ImGui::PushItemFlag(1 << 2, lockedPos);
+             if (ImGui::DragInt2(u8"客户端坐标", reinterpret_cast<int*>(&(cRect->buff.pos)))) {
+                 cRect->buff.right = cRect->buff.left + cRect->size.w;
+                 cRect->buff.bottom = cRect->buff.top + cRect->size.h;
+                 cRect->changed = true;
+            }
+                ImGui::PopItemFlag();
+                ImGui::ShowHelp(u8"输入客户端的位置坐标,[left,top]");
+                
+             ImGui::PushItemFlag(1 << 2, lockedSize);
+             if (ImGui::DragInt2(u8"客户端大小", reinterpret_cast<int*>(&(cRect->size)))) {
+                 cRect->buff.right = cRect->buff.left +  cRect->size.w;
+                 cRect->buff.bottom = cRect->buff.top + cRect->size.h;
+                 cRect->changed = true;
+                }
+                ImGui::PopItemFlag();
+                ImGui::ShowHelp(u8"输入客户端的界面大小,[width,height]");
+                
+        }
+        else
+        {
+            if (comb_checked) {
+               
+                    switch (postion_idx)
+                    {
+                    case 1: {
+                        cRect->StayLT();
+                        break;
+                    }
+                    case 2: {
+                        cRect->StayLM();
+                        break;
+                    }
+                    case 3:{
+                        cRect->StayLB();
+                        break;
+                    }
+                    case 4: {
+                        cRect->StayRT();
+                        break;
+                    }
+                    case 5: {
+                        cRect->StayRM();
+                        break;
+                    }
+                    case 6: {
+                        cRect->StayRB();
+                        break;
+                    }
+                    case 7: {
+                        cRect->StayMT();
+                        break;
+                    }
+                    case 8: {
+                        cRect->StayMM();
+                        break;
+                    }
+                    case 9: {
+                        cRect->StayMB();
+                        break;
+                    }
+                default:
+                    break;
+                }
+                
+                    if (cRect->Update()) {
+                        cRect->Merge();
+                        //ReflushDesktop();
+                    }
+                    else
+                    {
+                        Log::Error(u8"调整失败!");
+                        cRect->Reverse();
+                    }
+                }
+            
+        }
+        if (cRect->changed) {
+            ImGui::PushItemFlag(1 << 2, (lockedPos || lockedSize));
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0, 0.5f, 0, 1.0f });
+            if (ImGui::Button(u8"更新客户端状态", ImVec2{ 220,0 })) {
+                if (cRect->Update(HWND_TOP,0)) {
+                    cRect->Merge();
+                    //ReflushDesktop();
+                }
+                else
+                {
+                    Log::Error(u8"更新失败!");
+                    cRect->Reverse();
+                }
+            }
+            ImGui::PopStyleColor(1);
+            ImGui::PopItemFlag();
+            ImGui::ShowHelp(u8"生效我们输入的参数到客户端中");
+        }
+        ImGui::Checkbox(u8"无法移动客户端", &lockedPos);
+        ImGui::ShowHelp(u8"锁定客户端位置");
+        ImGui::SameLine(column_spacing);
+        ImGui::Checkbox(u8"无法调正大小", &lockedSize);
+        ImGui::ShowHelp(u8"锁定客户端大小");
+        ImGui::Checkbox(u8"固定长宽比", &fixedWH);
+        ImGui::PushItemFlag(1 << 2, (!fixedWH) || lockedSize);
+            ImGui::SameLine();
+            
+            if (ImGui::SliderFloat(u8"输入长宽比", &(cRect->ar),0.01f,10.0f)) {
+                cRect->AdjustAspectRatio();
+                cRect->changed = true;
+            }
+            ImGui::PopItemFlag();
+        
+      
+    }
+    
 }
 
 void GameSettings::FactionEarnedCheckAndWarn() {
@@ -1390,6 +1556,31 @@ void GameSettings::SetAfkMessage(std::wstring&& message) {
     } else {
         Log::Error("Afk message must be under 80 characters. (Yours is %zu)", message.size());
     }
+}
+
+
+
+void GameSettings::GetWindowsWH(INT2D* intance)
+{
+    if (!intance) return;
+    RECT rect = {};
+    HWND hgw = GW::MemoryMgr::GetGWWindowHandle();
+    if (hgw) GetWindowRect(hgw, &rect);
+    intance->handle = hgw;
+    intance->buff.left = rect.left;
+    intance->buff.right = rect.right;
+    intance->buff.top = rect.top;
+    intance->buff.bottom = rect.bottom;
+    intance->ar = 1.6f;
+    intance->size.w = rect.right - rect.left;
+    intance->size.h = rect.bottom - rect.top;
+    intance->Merge();
+}
+
+void GameSettings::ReflushDesktop()
+{
+    InvalidateRect(GetDesktopWindow(), NULL, TRUE);
+    UpdateWindow(GetDesktopWindow());
 }
 
 void GameSettings::Update(float delta) {
@@ -1475,6 +1666,11 @@ void GameSettings::DrawFOVSetting() {
     ImGui::ShowHelp("GWToolbox will save and maintain the FOV setting used with /cam fov <value>");
 }
 
+void GameSettings::ReSetWindowPos()
+{
+
+}
+
 void GameSettings::UpdateFOV() {
     if (maintain_fov && GW::CameraMgr::GetFieldOfView() != fov) {
         GW::CameraMgr::SetFieldOfView(fov);
@@ -1484,6 +1680,8 @@ void GameSettings::UpdateFOV() {
 bool GameSettings::WndProc(UINT Message, WPARAM wParam, LPARAM lParam) {
     UNREFERENCED_PARAMETER(lParam);
     // Open Whisper to targeted player with Ctrl + Enter
+    
+
     if (Message == WM_KEYDOWN
         && wParam == VK_RETURN
         && !ctrl_enter_whisper
@@ -1584,12 +1782,12 @@ void GameSettings::FriendStatusCallback(
     GameSettings& game_setting = GameSettings::Instance();
     if (status == f->status)
         return;
-    char buffer[512];
+    wchar_t buffer[512];
     switch (status) {
     case GW::FriendStatus::FriendStatus_Offline:
         if (game_setting.notify_when_friends_offline) {
-            snprintf(buffer, sizeof(buffer), "%ls (%ls) has just logged out.", charname, alias);
-            GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, (const wchar_t*)buffer);
+            swprintf(buffer, sizeof(buffer), L"%s (%s) has just logged out.", charname, alias);
+            GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, buffer);
         }
         return;
     case GW::FriendStatus::FriendStatus_Away:
@@ -1598,8 +1796,8 @@ void GameSettings::FriendStatusCallback(
         if (f->status != GW::FriendStatus::FriendStatus_Offline)
             return;
         if (game_setting.notify_when_friends_online) {
-            snprintf(buffer, sizeof(buffer), "<a=1>%ls</a> (%ls) has just logged in.</c>", charname, alias);
-            GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, (const wchar_t*)buffer);
+            swprintf(buffer, sizeof(buffer), L"<a=1>%s</a> (%s) has just logged in.</c>", charname, alias);
+            GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, buffer);
         }
         return;
     }

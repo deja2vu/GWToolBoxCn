@@ -501,7 +501,6 @@ size_t Minimap::GetPlayerHeroes(const GW::PartyInfo *party, std::vector<GW::Agen
     const uint32_t player_id = GW::PlayerMgr::GetPlayerNumber();
     if (!player_id)
         return 0;
-    Log::Info("123");
     const GW::HeroPartyMemberArray& heroes = party->heroes;
     
     bool player_is_leader = GetPlayerIsLeader();
@@ -511,7 +510,6 @@ size_t Minimap::GetPlayerHeroes(const GW::PartyInfo *party, std::vector<GW::Agen
             party_players_by_id.emplace(pplayer.login_number, &pplayer);
         }
     }
-    Log::Info("1222223");
     _player_heroes.reserve(heroes.size());
     for (const GW::HeroPartyMember &hero : heroes) {
         if (hero.owner_player_id == player_id)
@@ -524,7 +522,6 @@ size_t Minimap::GetPlayerHeroes(const GW::PartyInfo *party, std::vector<GW::Agen
                 *has_flags = true;
         }
     }
-    Log::Info("122222222223");
     if (player_is_leader && has_flags && party->henchmen.size())
         *has_flags = true;
     else if (_player_heroes.size() && has_flags)

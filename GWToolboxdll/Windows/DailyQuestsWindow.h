@@ -58,11 +58,11 @@ private:
     int daily_quest_window_count = 90;
 
     static void CmdWeeklyBonus(const wchar_t* message, int argc, LPWSTR* argv);
-    static void CmdWantedByShiningBlade(const wchar_t *message, int argc, LPWSTR *argv);
-    static void CmdZaishenBounty(const wchar_t *message, int argc, LPWSTR *argv);
-    static void CmdZaishenMission(const wchar_t *message, int argc, LPWSTR *argv);
-    static void CmdZaishenCombat(const wchar_t *message, int argc, LPWSTR *argv);
-    static void CmdZaishenVanquish(const wchar_t *message, int argc, LPWSTR *argv);
-    static void CmdVanguard(const wchar_t *message, int argc, LPWSTR *argv);
-    static void CmdNicholas(const wchar_t *message, int argc, LPWSTR *argv);
+    static void CmdWantedByShiningBlade(const wchar_t* message, int argc, LPWSTR* argv);
+    static void CmdZaishenBounty(const wchar_t* message, int argc, LPWSTR* argv);
+    static void CmdZaishenMission(const wchar_t* message, int argc, LPWSTR* argv);
+    static void CmdZaishenCombat(const wchar_t* message, int argc, LPWSTR* argv);
+    static void CmdZaishenVanquish(const wchar_t* message, int argc, LPWSTR* argv);
+    static void CmdVanguard(const wchar_t* message, int argc, LPWSTR* argv);
+    static void CmdNicholas(const wchar_t* message, int argc, LPWSTR* argv);
 };

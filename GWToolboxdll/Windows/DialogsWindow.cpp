@@ -145,7 +145,8 @@ void DialogsWindow::Draw(IDirect3DDevice9* pDevice) {
                 if (GuiUtils::ParseInt(customdialogbuf, &iid) && (0 <= iid)) {
                     uint32_t id = static_cast<uint32_t>(iid);
                     GW::Agents::SendDialog(id);
-                } else {
+                }
+                else {
                     Log::Error("Invalid dialog number '%s'", customdialogbuf);
                 }
             }

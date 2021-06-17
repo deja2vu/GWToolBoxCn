@@ -13,7 +13,7 @@
 #include <Logger.h>
 
 #include <Windows/DailyQuestsWindow.h>
-
+namespace{
 static const char* vanguard_cycles[9] = {
     u8"²Ý¿Ü",
     u8"ÓÈÌáÄá ÎÚÆÂÎÚÆÂ",
@@ -1005,11 +1005,13 @@ static const char* pvp_weekly_bonus_descriptions[6] = {
 };
 
 bool subscriptions_changed = false;
+bool checked_subscriptions = false;
+time_t start_time;
 
-const char* DateString(time_t* unix) {
+const wchar_t* DateString(time_t* unix) {
     std::tm* now = std::localtime(unix);
-    static char buf[12];
-    snprintf(buf, sizeof(buf), "%d-%02d-%02d", now->tm_year + 1900, now->tm_mon + 1, now->tm_mday);
+    static wchar_t buf[12];
+    swprintf(buf, sizeof(buf), L"%d-%02d-%02d", now->tm_year + 1900, now->tm_mon + 1, now->tm_mday);
     return buf;
 }
 uint32_t GetZaishenBounty(time_t* unix) {
@@ -1030,6 +1032,19 @@ uint32_t GetZaishenMission(time_t* unix) {
 uint32_t GetZaishenVanquish(time_t* unix) {
     return static_cast<uint32_t>((*unix - 1299168000) / 86400 % 136);
 }
+void PrintDaily(const wchar_t* label, const char* value, time_t unix, bool as_wiki_link = true) {
+    bool show_date = unix != time(nullptr);
+    wchar_t buf[139];
+    if (show_date) {
+        swprintf(buf, _countof(buf), as_wiki_link ? L"%s, %s: <a=1>\x200B%S</a>" : L"%s, %s: <a=1>%S</a>", label, DateString(&unix), value);
+    }
+    else {
+        swprintf(buf, _countof(buf), as_wiki_link ? L"%s: <a=1>\x200B%S</a>" : L"%s: %S", label, value);
+    }
+    GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, buf);
+}
+}
+
 // Find the "week start" for this timestamp.
 time_t GetWeeklyRotationTime(time_t* unix) {
     return (time_t)(floor((*unix - 1368457200) / 604800) * 604800) + 1368457200;
@@ -1068,7 +1083,7 @@ bool GetIsPreSearing() {
 void DailyQuests::Draw(IDirect3DDevice9*) {
     if (!visible) return;
 
-    ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver, ImVec2(.5f, .5f));
+    ImGui::SetNextWindowCenter(ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(ImVec2(300, 250), ImGuiCond_FirstUseEver);
     if (!ImGui::Begin(Name(), GetVisiblePtr(), GetWinFlags()))
         return ImGui::End();
@@ -1185,7 +1200,7 @@ void DailyQuests::Draw(IDirect3DDevice9*) {
             ImGui::TextColored(subscribed_weekly_bonus_pve[idx] ? sCol : wCol, pve_weekly_bonus_cycles[idx]);
             if (ImGui::IsItemHovered())
                 ImGui::SetTooltip(pve_weekly_bonus_descriptions[idx]);
-            if(ImGui::IsItemClicked())
+            if (ImGui::IsItemClicked())
                 subscribed_weekly_bonus_pve[idx] = !subscribed_weekly_bonus_pve[idx];
             ImGui::SameLine(offset += wbe_width);
         }
@@ -1203,7 +1218,7 @@ void DailyQuests::Draw(IDirect3DDevice9*) {
     }
     ImGui::EndChild();
     ImGui::TextDisabled("Click on a daily quest to get notified when its coming up. Subscribed quests are highlighted in ");
-    ImGui::SameLine(0,0);
+    ImGui::SameLine(0, 0);
     ImGui::TextColored(sCol, "blue");
     ImGui::SameLine(0, 0);
     ImGui::TextDisabled(".");
@@ -1387,19 +1402,19 @@ void DailyQuests::Initialize() {
         GW::Chat::SendChat('/', "wanted");
         GW::Chat::SendChat('/', "nicholas");
         GW::Chat::SendChat('/', "weekly");
-    });
+        });
     GW::Chat::CreateCommand(L"daily", [](const wchar_t* message, int argc, LPWSTR* argv) -> void {
         UNREFERENCED_PARAMETER(message);
         UNREFERENCED_PARAMETER(argc);
         UNREFERENCED_PARAMETER(argv);
         GW::Chat::SendChat('/', "today");
-    });
+        });
     GW::Chat::CreateCommand(L"dailies", [](const wchar_t* message, int argc, LPWSTR* argv) -> void {
         UNREFERENCED_PARAMETER(message);
         UNREFERENCED_PARAMETER(argc);
         UNREFERENCED_PARAMETER(argv);
         GW::Chat::SendChat('/', "today");
-    });
+        });
     GW::Chat::CreateCommand(L"tomorrow", [](const wchar_t* message, int argc, LPWSTR* argv) -> void {
         UNREFERENCED_PARAMETER(message);
         UNREFERENCED_PARAMETER(argc);
@@ -1415,10 +1430,9 @@ void DailyQuests::Initialize() {
         GW::Chat::SendChat('/', "zv tomorrow");
         GW::Chat::SendChat('/', "wanted tomorrow");
         GW::Chat::SendChat('/', "nicholas tomorrow");
-    });
+        });
 }
-bool checked_subscriptions = false;
-time_t start_time;
+
 void DailyQuests::Update(float delta) {
     UNREFERENCED_PARAMETER(delta);
     if (subscriptions_changed)
@@ -1465,8 +1479,8 @@ void DailyQuests::Update(float delta) {
         for (unsigned int i = 0; i < 2; i++) {
             char date_str[32];
             switch (i) {
-                case 0: std::strftime(date_str, 32, "until %R on %A", std::localtime(&unix)); break;
-                default: std::strftime(date_str, 32, "on %A at %R", std::localtime(&unix)); break;
+            case 0: std::strftime(date_str, 32, "until %R on %A", std::localtime(&unix)); break;
+            default: std::strftime(date_str, 32, "on %A at %R", std::localtime(&unix)); break;
             }
             if (subscribed_weekly_bonus_pve[quest_idx = GetWeeklyBonusPvE(&unix)])
                 Log::Info("%s is the Weekly PvE Bonus %s", pve_weekly_bonus_cycles[quest_idx], date_str);
@@ -1477,128 +1491,60 @@ void DailyQuests::Update(float delta) {
     }
 }
 
-void DailyQuests::CmdWeeklyBonus(const wchar_t* message, int argc, LPWSTR* argv) {
-    UNREFERENCED_PARAMETER(message);
+void DailyQuests::CmdWeeklyBonus(const wchar_t*, int argc, LPWSTR* argv) {
     time_t now = time(nullptr);
-    time_t nowOriginal = time(&now);
     if (argc > 1 && !wcscmp(argv[1], L"tomorrow"))
         now += 86400;
-    const int buf_size = 139;
-    char buf[buf_size];
-    char buf2[buf_size];
-    if (nowOriginal == now) { // Today - dont put timestamp in.
-        snprintf(buf, buf_size, "Weekly Bonus PvE: <a=1>%s%s</a>", "https://wiki.guildwars.com/wiki/", pve_weekly_bonus_cycles[GetWeeklyBonusPvE(&now)]);
-        snprintf(buf2, buf_size, "Weekly Bonus PvP: <a=1>%s%s</a>", "https://wiki.guildwars.com/wiki/", pvp_weekly_bonus_cycles[GetWeeklyBonusPvP(&now)]);
+    PrintDaily(L"Weekly Bonus PvE", pve_weekly_bonus_cycles[GetWeeklyBonusPvE(&now)], now);
+    PrintDaily(L"Weekly Bonus PvP", pvp_weekly_bonus_cycles[GetWeeklyBonusPvP(&now)], now);
+}
+void DailyQuests::CmdZaishenBounty(const wchar_t*, int argc, LPWSTR* argv) {
+    time_t now = time(nullptr);
+    if (argc > 1 && !wcscmp(argv[1], L"tomorrow"))
+        now += 86400;
+    PrintDaily(L"Zaishen Bounty", zaishen_bounty_cycles[GetZaishenBounty(&now)], now);
+}
+void DailyQuests::CmdZaishenMission(const wchar_t*, int argc, LPWSTR* argv) {
+    time_t now = time(nullptr);
+    if (argc > 1 && !wcscmp(argv[1], L"tomorrow"))
+        now += 86400;
+    PrintDaily(L"Zaishen Mission", zaishen_mission_cycles[GetZaishenMission(&now)], now);
+}
+void DailyQuests::CmdZaishenVanquish(const wchar_t*, int argc, LPWSTR* argv) {
+    time_t now = time(nullptr);
+    if (argc > 1 && !wcscmp(argv[1], L"tomorrow"))
+        now += 86400;
+    PrintDaily(L"Zaishen Vanquish", zaishen_vanquish_cycles[GetZaishenVanquish(&now)], now);
+}
+void DailyQuests::CmdZaishenCombat(const wchar_t*, int argc, LPWSTR* argv) {
+    time_t now = time(nullptr);
+    if (argc > 1 && !wcscmp(argv[1], L"tomorrow"))
+        now += 86400;
+    PrintDaily(L"Zaishen Combat", zaishen_combat_cycles[GetZaishenCombat(&now)], now);
+}
+void DailyQuests::CmdWantedByShiningBlade(const wchar_t*, int argc, LPWSTR* argv) {
+    time_t now = time(nullptr);
+    if (argc > 1 && !wcscmp(argv[1], L"tomorrow"))
+        now += 86400;
+    PrintDaily(L"Wanted", wanted_by_shining_blade_cycles[GetWantedByShiningBlade(&now)], now);
+}
+void DailyQuests::CmdVanguard(const wchar_t*, int argc, LPWSTR* argv) {
+    time_t now = time(nullptr);
+    if (argc > 1 && !wcscmp(argv[1], L"tomorrow"))
+        now += 86400;
+    PrintDaily(L"Vanguard Quest", GetVanguardQuest(&now), now);
+}
+void DailyQuests::CmdNicholas(const wchar_t*, int argc, LPWSTR* argv) {
+    time_t now = time(nullptr);
+    if (argc > 1 && !wcscmp(argv[1], L"tomorrow"))
+        now += 86400;
+    char buf[128];
+    if (GetIsPreSearing()) {
+        snprintf(buf, _countof(buf), "5 %s", GetNicholasSandfordLocation(&now));
+        PrintDaily(L"Nicholas Sandford", buf, now, false);
     }
     else {
-        snprintf(buf, buf_size, "Weekly Bonus PvE, %s: <a=1>%s%s</a>", DateString(&now), "https://wiki.guildwars.com/wiki/", pve_weekly_bonus_cycles[GetWeeklyBonusPvE(&now)]);
-        snprintf(buf2, buf_size, "Weekly Bonus PvP, %s: <a=1>%s%s</a>", DateString(&now), "https://wiki.guildwars.com/wiki/", pvp_weekly_bonus_cycles[GetWeeklyBonusPvP(&now)]);
+        snprintf(buf, _countof(buf), "%d %s in %s", GetNicholasItemQuantity(&now), GetNicholasItemName(&now), GetNicholasLocation(&now));
+        PrintDaily(L"Nicholas the Traveler", buf, now, false);
     }
-    GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, (const wchar_t *)buf);
-    GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, (const wchar_t*)buf2);
-}
-void DailyQuests::CmdZaishenBounty(const wchar_t *message, int argc, LPWSTR *argv) {
-    UNREFERENCED_PARAMETER(message);
-    time_t now = time(nullptr);
-    time_t nowOriginal = time(&now);
-    if (argc > 1 && !wcscmp(argv[1], L"tomorrow"))
-        now += 86400;
-    const int buf_size = 139;
-    char buf[buf_size];
-    if (nowOriginal == now) // Today - dont put timestamp in.
-        snprintf(buf, buf_size, "Zaishen Bounty: <a=1>%s%s</a>", "https://wiki.guildwars.com/wiki/", zaishen_bounty_cycles[GetZaishenBounty(&now)]);
-    else
-        snprintf(buf, buf_size, "Zaishen Bounty, %s: <a=1>%s%s</a>", DateString(&now), "https://wiki.guildwars.com/wiki/", zaishen_bounty_cycles[GetZaishenBounty(&now)]);
-    GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, (const wchar_t*)buf);
-}
-void DailyQuests::CmdZaishenMission(const wchar_t *message, int argc, LPWSTR *argv) {
-    UNREFERENCED_PARAMETER(message);
-    time_t now = time(nullptr);
-    time_t nowOriginal = time(&now);
-    if (argc > 1 && !wcscmp(argv[1], L"tomorrow"))
-        now += 86400;
-    const int buf_size = 139;
-    char buf[buf_size];
-    if (nowOriginal == now) // Today - dont put timestamp in.
-        snprintf(buf, buf_size, "Zaishen Mission: <a=1>%s%s</a>", "https://wiki.guildwars.com/wiki/", zaishen_mission_cycles[GetZaishenMission(&now)]);
-    else
-        snprintf(buf, buf_size, "Zaishen Mission, %s: <a=1>%s%s</a>", DateString(&now), "https://wiki.guildwars.com/wiki/", zaishen_mission_cycles[GetZaishenMission(&now)]);
-    GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, (const wchar_t*)buf);
-}
-void DailyQuests::CmdZaishenVanquish(const wchar_t *message, int argc, LPWSTR *argv) {
-    UNREFERENCED_PARAMETER(message);
-    time_t now = time(nullptr);
-    time_t nowOriginal = time(&now);
-    if (argc > 1 && !wcscmp(argv[1], L"tomorrow"))
-        now += 86400;
-    const int buf_size = 139;
-    char buf[buf_size];
-    if (nowOriginal == now) // Today - dont put timestamp in.
-        snprintf(buf, buf_size, "Zaishen Vanquish: <a=1>%s%s</a>", "https://wiki.guildwars.com/wiki/", zaishen_vanquish_cycles[GetZaishenVanquish(&now)]);
-    else
-        snprintf(buf, buf_size, "Zaishen Vanquish, %s: <a=1>%s%s</a>", DateString(&now), "https://wiki.guildwars.com/wiki/", zaishen_vanquish_cycles[GetZaishenVanquish(&now)]);
-    GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, (const wchar_t*)buf);
-}
-void DailyQuests::CmdZaishenCombat(const wchar_t *message, int argc, LPWSTR *argv) {
-    UNREFERENCED_PARAMETER(message);
-    time_t now = time(nullptr);
-    time_t nowOriginal = time(&now);
-    if (argc > 1 && !wcscmp(argv[1], L"tomorrow"))
-        now += 86400;
-    const int buf_size = 139;
-    char buf[buf_size];
-    if (nowOriginal == now) // Today - dont put timestamp in.
-        snprintf(buf, buf_size, "Zaishen Combat: <a=1>%s%s</a>", "https://wiki.guildwars.com/wiki/", zaishen_combat_cycles[GetZaishenCombat(&now)]);
-    else
-        snprintf(buf, buf_size, "Zaishen Combat, %s: <a=1>%s%s</a>", DateString(&now), "https://wiki.guildwars.com/wiki/", zaishen_combat_cycles[GetZaishenCombat(&now)]);
-    GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, (const wchar_t*)buf);
-}
-void DailyQuests::CmdWantedByShiningBlade(const wchar_t *message, int argc, LPWSTR *argv) {
-    UNREFERENCED_PARAMETER(message);
-    time_t now = time(nullptr);
-    time_t nowOriginal = time(&now);
-    if (argc > 1 && !wcscmp(argv[1], L"tomorrow"))
-        now += 86400;
-    const int buf_size = 139;
-    char buf[buf_size];
-    if (nowOriginal == now) // Today - dont put timestamp in.
-        snprintf(buf, buf_size, "Wanted: <a=1>%s%s</a>", "https://wiki.guildwars.com/wiki/", wanted_by_shining_blade_cycles[GetWantedByShiningBlade(&now)]);
-    else
-        snprintf(buf, buf_size, "Wanted, %s: <a=1>%s%s</a>", DateString(&now), "https://wiki.guildwars.com/wiki/", wanted_by_shining_blade_cycles[GetWantedByShiningBlade(&now)]);
-    GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, (const wchar_t*)buf);
-}
-void DailyQuests::CmdVanguard(const wchar_t *message, int argc, LPWSTR *argv) {
-    UNREFERENCED_PARAMETER(message);
-    time_t now = time(nullptr);
-    time_t nowOriginal = time(&now);
-    if (argc > 1 && !wcscmp(argv[1], L"tomorrow"))
-        now += 86400;
-    const int buf_size = 139;
-    char buf[buf_size];
-    if (nowOriginal == now) // Today - dont put timestamp in.
-        snprintf(buf, buf_size, "Vanguard Quest: <a=1>%s%s</a>", "https://wiki.guildwars.com/wiki/", GetVanguardQuest(&now));
-    else
-        snprintf(buf, buf_size, "Vanguard Quest, %s: <a=1>%s%s</a>", DateString(&now), "https://wiki.guildwars.com/wiki/", GetVanguardQuest(&now));
-    GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, (const wchar_t*)((char*)buf));
-}
-void DailyQuests::CmdNicholas(const wchar_t *message, int argc, LPWSTR *argv) {
-    UNREFERENCED_PARAMETER(message);
-    time_t now = time(nullptr);
-    time_t nowOriginal = time(&now);
-    if (argc > 1 && !wcscmp(argv[1], L"tomorrow"))
-        now += 86400;
-    const int buf_size = 139;
-    char buf[buf_size];
-    if (GetIsPreSearing()) {
-        if (nowOriginal == now) // Today - dont put timestamp in.
-            snprintf(buf, buf_size, "Nicholas Sandford: 5 %s", GetNicholasSandfordLocation(&now));
-        else
-            snprintf(buf, buf_size, "Nicholas Sandford, %s: 5 %s", DateString(&now), GetNicholasSandfordLocation(&now));
-    } else {
-        if (nowOriginal == now) // Today - dont put timestamp in.
-            snprintf(buf, buf_size, "Nicholas the Traveler: %d %s in %s", GetNicholasItemQuantity(&now), GetNicholasItemName(&now), GetNicholasLocation(&now));
-        else
-            snprintf(buf, buf_size, "Nicholas the Traveler, %s: %d %s in %s", DateString(&now), GetNicholasItemQuantity(&now), GetNicholasItemName(&now), GetNicholasLocation(&now));
-    }
-    GW::Chat::WriteChat(GW::Chat::Channel::CHANNEL_GLOBAL, (const wchar_t*)((char*)buf));
 }

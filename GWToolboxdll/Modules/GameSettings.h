@@ -132,9 +132,17 @@ protected:
 
 
 class GameSettings : public ToolboxModule {
-    GameSettings() {};
+    GameSettings()
+    {
+        cRect = new INT2D();
+        GetWindowsWH(cRect);
+    };
     GameSettings(const GameSettings&) = delete;
-    ~GameSettings() {};
+    ~GameSettings() {
+        if (cRect) {
+            delete cRect;
+        }
+    };
 
 public:
     static GameSettings& Instance() {
@@ -164,6 +172,246 @@ public:
     float fov = 1.308997f; // default fov
 
     void SetAfkMessage(std::wstring&& message);
+    struct INT2D;
+    struct INT2D:RECT
+    {
+    public:
+        struct Cache
+        {
+            union {
+                struct
+                {
+                    LONG left,top;
+                };
+                struct {
+                    int x, y;
+                }pos;
+            };
+            LONG right, bottom;
+            
+        };
+        Cache buff;
+    private:
+        inline void AdjustLeft() {
+            buff.right -= buff.left;
+            buff.left = 0;
+        }
+        inline void AdjustRight() {
+           LONG w = ScreenWidth();
+            buff.left = buff.left + w - buff.right;
+            buff.right = w;
+        }
+        inline void AdjustTop() {
+            buff.bottom -= buff.top;
+            buff.top = 0;
+        }
+        inline void AdjustBottom() {
+           LONG h = ScreenHeight();
+            buff.top = buff.top + h - buff.bottom;
+            buff.bottom = h;
+        }
+        inline void AdjustWidthCenter() {
+            LONG w = ScreenWidth();
+            LONG w2 = static_cast<int>((w - (buff.right - buff.left)) / 2);
+            buff.left = w2;
+            buff.right =w- w2;
+        }
+        inline void AdjustHeightCenter() {
+            LONG h = ScreenHeight();
+            LONG h2 = static_cast<int>((h - (buff.bottom - buff.top)) / 2);
+            buff.top = h2;
+            buff.bottom =h - h2;
+        }
+        inline void AdjustRect(LONG offset) {
+            buff.left -= offset;
+            buff.right -= offset;
+            buff.top -= offset;
+            buff.bottom -= offset;
+        }
+        /*
+        inline std::pair<DWORD,DWORD> GetScreenWH() {
+            HMONITOR monitor = MonitorFromWindow(handle, MONITOR_DEFAULTTONEAREST);
+            // Get the logical width and height of the monitor
+            MONITORINFOEX monitorInfoEx;
+            monitorInfoEx.cbSize = sizeof(monitorInfoEx);
+            GetMonitorInfo(monitor, &monitorInfoEx);
+           // auto cxLogical = monitorInfoEx.rcMonitor.right - monitorInfoEx.rcMonitor.left;
+           // auto cyLogical = monitorInfoEx.rcMonitor.bottom - monitorInfoEx.rcMonitor.top;
+
+            // Get the physical width and height of the monitor
+            DEVMODE devMode;
+            devMode.dmSize = sizeof(devMode);
+            devMode.dmDriverExtra = 0;
+            EnumDisplaySettings(monitorInfoEx.szDevice, ENUM_CURRENT_SETTINGS, &devMode);
+            return { devMode.dmPelsWidth , devMode.dmPelsHeight };
+        }
+        */
+    public:
+        HWND handle;
+        float ar;
+        bool changed = false;
+        struct {
+            LONG w, h;
+        } size;
+    public:
+        INT2D(HWND _handle,RECT rect):
+            buff({ rect.left,rect.right,rect.top,rect.bottom}),ar(1.6f),handle(_handle)
+        {
+            left = rect.left;
+            right = rect.right;
+            top = rect.top;
+            bottom = rect.bottom;
+        }
+        INT2D() :INT2D(0,RECT{ 0,0,0,0 })
+        {
+
+        }
+        inline void AdjustAspectRatio() {
+            //fix height,check width
+            if (ar <= 0.0f) return;
+            int cW = ScreenWidth();
+            int tmp = static_cast<int>((buff.bottom - buff.top) * ar);
+            if (tmp <= (cW - (buff.right -buff.left))) {
+                buff.right = buff.left + tmp;
+            }
+            else if(tmp<= cW){
+                buff.right = cW;
+                buff.left = cW - tmp;
+                size.w = cW;
+            }
+            else {
+                buff.left = 0;
+                buff.right = cW;
+                buff.bottom = buff.top + static_cast<int>((cW/ ar));
+                size.h = buff.bottom - buff.top;
+            }
+        }
+        inline void Merge() {
+            this->left = buff.left;
+            this->right = buff.right;
+            this->top = buff.top;
+            this->bottom = buff.bottom;
+            changed = false;
+        }
+        inline void Reverse() {
+            buff.left = this->left;
+            buff.right = this->right;
+            buff.top = this->top;
+            buff.bottom = this->bottom;
+            size.w = this->right - this->left;
+            size.h = this->bottom - this->top;
+        }
+        inline void StayLT() {
+            AdjustLeft();
+            AdjustTop();
+        }
+        inline void StayLM() {
+            AdjustLeft();
+            AdjustHeightCenter();
+        }
+        inline void StayLB() {
+            AdjustLeft();
+            AdjustBottom();
+        }
+        inline void StayRT() {
+            AdjustRight();
+            AdjustTop();
+        }
+        inline void StayRM() {
+            AdjustRight();
+            AdjustHeightCenter();
+        }
+        inline void StayRB() {
+            AdjustRight();
+            AdjustHeightCenter();
+        }
+        inline void StayMT() {
+            AdjustWidthCenter();
+            AdjustTop();
+        }
+        inline void StayMM() {
+            AdjustHeightCenter();
+            AdjustWidthCenter();
+        }
+        inline void StayMB() {
+            AdjustWidthCenter();
+            AdjustBottom();
+        }
+        inline int ScreenWidth() {
+            return GetSystemMetrics(SM_CXSCREEN);
+        }
+        inline int ScreenHeight() {
+            return GetSystemMetrics(SM_CYSCREEN);
+        }
+        inline UINT EXSTYLE(){
+           return GetWindowLong(handle, GWL_EXSTYLE);
+        }
+        inline BOOL Update(HWND zOrder = HWND_TOPMOST,UINT flag = SWP_SHOWWINDOW) {
+            if (!this->HasDelta()) return true;
+            UINT exstlye = flag;
+            if (flag == 0) exstlye = EXSTYLE();
+            return SetWindowPos(handle,zOrder,buff.left,buff.top, buff.right - buff.left,buff.bottom - buff.top, flag);
+        }
+        inline bool HasDelta() {
+            return !(buff.left == this->left &&
+                buff.right == this->right &&
+                buff.top == this->top &&
+                buff.bottom == this->bottom);
+        }
+        inline bool NeedBeAdjusted() {
+            return (size.w == static_cast<int>(size.h * ar));
+        };
+        inline void OnResizing(LPARAM lParam) {
+            RECT* rect(reinterpret_cast<RECT*>(lParam));
+            left = rect->left;
+            right = rect->right;
+            top = rect->top;
+            bottom = rect->bottom;
+            Reverse();
+        }
+        inline void OnMoving(LPARAM lParam) {
+            RECT* rect(reinterpret_cast<RECT*>(lParam));
+            left = rect->left;
+            right = rect->right;
+            top = rect->top;
+            bottom = rect->bottom;
+            Reverse();
+        }
+        inline void OnSize(WPARAM wParam, LPARAM lParam) {
+            UNREFERENCED_PARAMETER(lParam);
+            if (wParam == SIZE_MAXIMIZED) {
+                left = 0;
+                top = 0;
+                right = left + ScreenWidth();
+                bottom = top + ScreenHeight();
+                Reverse();
+            }
+            else if (wParam == SIZE_MINIMIZED) {
+                left = 0;
+                top = 0;
+                right = 0;
+                bottom = 0;
+                Reverse();
+            }
+            /*
+            else if (wParam == SIZE_RESTORED) {
+                
+                UINT width = LOWORD(lParam);
+                UINT height = HIWORD(lParam);
+                Log::Info("w1:%d", width);
+                Log::Info("h1:%d", height);
+                right += width;
+                bottom += height;
+                Reverse();
+                
+            }
+            */
+        }
+        
+    };
+    void GetWindowsWH(INT2D* instance);
+    void ReflushDesktop();
+
 
     // Static callback functions
     static void ItemClickCallback(GW::HookStatus *, uint32_t type, uint32_t slot, GW::Bag *bag);
@@ -193,6 +441,14 @@ public:
     
 
     bool tick_is_toggle = false;
+
+    int postion_idx = 0;
+    INT2D* cRect = nullptr;
+    //bool immediate_mode = false;
+    bool lockedPos = false;
+    bool lockedSize = false;
+    bool fixedWH = false;
+    float ClientWH = 1.777778f;
 
     bool shorthand_item_ping = true;
     bool openlinks = false;
@@ -253,6 +509,7 @@ public:
     std::vector<PendingChatMessage*> pending_messages;
 
 private:
+    void ReSetWindowPos();
     void UpdateFOV();
     void FactionEarnedCheckAndWarn();
     bool faction_checked = false;
@@ -264,6 +521,7 @@ private:
     GW::MemoryPatcher gold_confirm_patch;
     std::vector<std::wstring> previous_party_names;
 
+    bool lock_Size_Positon = false;
     bool was_leading = true;
     bool check_message_on_party_change = true;
     bool npc_speech_bubbles_as_chat = false;
